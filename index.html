@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RoboKids - ¡Aprende Robótica Jugando!</title>
+    <!-- Fuentes Infantiles de Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+    <!-- Vinculación con el archivo CSS -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <!-- 1. BARRA DE NAVEGACIÓN DIVERTIDA -->
+    <header class="navbar">
+        <div class="logo">
+            <span class="logo-icon">🤖</span> ROBO<span class="highlight">KIDS</span> ✨
+        </div>
+        <nav class="nav-links">
+            <a href="#introduccion">💡 ¿Qué es?</a>
+            <a href="#codigos">🧩 Tipos de Código</a>
+            <a href="#tipos-datos">📊 Tipos de Datos</a>
+            <a href="#inicio" class="active">🚀 Inicio</a>
+            <a href="#niveles">⭐ Elegir Grado</a>
+            <a href="#mapa-programacion">🎮 Juego 1: Niveles</a>
+            <a href="#robotkits-app">🎮 Juego 2: RobotKits</a>
+        </nav>
+        <button class="btn-contacto">✉️ ¡Escríbenos!</button>
+    </header>
+
+    <!-- 1.5. SECCIÓN INTRODUCTORIA: ¿QUÉ ES LA ROBÓTICA Y LA PROGRAMACIÓN? -->
+    <section id="introduccion" class="hero-section" style="padding-bottom: 0;">
+        <div class="poster-card">
+            <div class="inner-card" style="background: linear-gradient(135deg, #4834d4 0%, #6c5ce7 100%);">
+                <div class="hero-text" style="width: 100%;">
+                    <span class="badge-fun">💡 ¿SABÍAS QUÉ? 💡</span>
+                    <h2 class="sub-title">DESCUBRE EL MUNDO DE LA</h2>
+                    <h1 class="main-title" style="font-size: 3rem;">TECNOLOGÍA</h1>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; margin-top: 20px;">
+                        
+                        <!-- Tarjeta Robótica -->
+                        <div style="background: rgba(255, 255, 255, 0.15); padding: 18px; border-radius: 16px; border: 2px dashed #ffeaa7;">
+                            <h3 style="font-family: 'Fredoka', cursive; font-size: 1.4rem; color: #ffeaa7; margin-bottom: 8px;">
+                                🤖 ¿Qué es la Robótica?
+                            </h3>
+                            <p style="font-size: 0.95rem; font-weight: 700; line-height: 1.4; color: #ffffff;">
+                                Es la ciencia encargada de diseñar, construir y dar vida a las máquinas (los robots). Un robot combina motores, sensores y circuitos para moverse e interactuar con el mundo físico.
+                            </p>
+                        </div>
+
+                        <!-- Tarjeta Programación -->
+                        <div style="background: rgba(255, 255, 255, 0.15); padding: 18px; border-radius: 16px; border: 2px dashed #00b894;">
+                            <h3 style="font-family: 'Fredoka', cursive; font-size: 1.4rem; color: #55efc4; margin-bottom: 8px;">
+                                💻 ¿Qué es la Programación?
+                            </h3>
+                            <p style="font-size: 0.95rem; font-weight: 700; line-height: 1.4; color: #ffffff;">
+                                Es el idioma que usamos para hablar con las máquinas. Es escribir instrucciones y pasos lógicos (llamados algoritmos) para enseñarle a la computadora o al robot qué hacer.
+                            </p>
+                        </div>
+
+                        <!-- Tarjeta Relación -->
+                        <div style="background: rgba(255, 255, 255, 0.15); padding: 18px; border-radius: 16px; border: 2px dashed #fd79a8;">
+                            <h3 style="font-family: 'Fredoka', cursive; font-size: 1.4rem; color: #ff7675; margin-bottom: 8px;">
+                                ⚡ ¿Cómo se Relacionan?
+                            </h3>
+                            <p style="font-size: 0.95rem; font-weight: 700; line-height: 1.4; color: #ffffff;">
+                                ¡Son un equipo perfecto! El robot es el <strong>cuerpo</strong> (hardware) y la programación es el <strong>cerebro</strong> (software). ¡Sin código, el robot no sabría cómo moverse!
+                            </p>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 1.8. SECCIÓN: TIPOS DE CÓDIGO Y LENGUAJES -->
+    <section id="codigos" class="hero-section" style="padding-top: 25px; padding-bottom: 0;">
+        <div class="poster-card">
+            <div class="inner-card" style="background: linear-gradient(135deg, #2c2c54 0%, #474787 100%);">
+                <div class="hero-text" style="width: 100%;">
+                    <span class="badge-fun" style="background-color: #00b894; color: #ffffff; box-shadow: 0 3px 0px #00896f;">🧩 LENGUAJES Y HERRAMIENTAS 🧩</span>
+                    <h2 class="sub-title" style="color: #55efc4;">TIPOS DE CÓDIGO</h2>
+                    <h1 class="main-title" style="font-size: 2.8rem;">¿CÓMO LE HABLAMOS AL ROBOT?</h1>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; margin-top: 20px;">
+                        
+                        <!-- Código en Bloques -->
+                        <div style="background: rgba(255, 255, 255, 0.12); padding: 18px; border-radius: 16px; border: 2px dashed #fdcb6e;">
+                            <h3 style="font-family: 'Fredoka', cursive; font-size: 1.3rem; color: #ffeaa7; margin-bottom: 8px;">
+                                🧩 Programación por Bloques (Scratch / MakeCode)
+                            </h3>
+                            <p style="font-size: 0.9rem; font-weight: 700; line-height: 1.4; color: #ffffff; margin-bottom: 8px;">
+                                <strong>¿Qué es?</strong> Es como armar un rompecabezas visual. Encajas piezas de colores que ya tienen órdenes escritas.
+                            </p>
+                            <p style="font-size: 0.85rem; font-weight: 700; color: #74b9ff;">
+                                🎯 <strong>¿Para qué sirve?</strong> Ideal para empezar. Te enseña la lógica de programar sin preocuparte por cometer errores al escribir.
+                            </p>
+                        </div>
+
+                        <!-- Código en Texto / C++ -->
+                        <div style="background: rgba(255, 255, 255, 0.12); padding: 18px; border-radius: 16px; border: 2px dashed #ff7675;">
+                            <h3 style="font-family: 'Fredoka', cursive; font-size: 1.3rem; color: #ff7675; margin-bottom: 8px;">
+                                💻 Código en Texto (Arduino / C++)
+                            </h3>
+                            <p style="font-size: 0.9rem; font-weight: 700; line-height: 1.4; color: #ffffff; margin-bottom: 8px;">
+                                <strong>¿Qué es?</strong> Es escribir comandos con letras, símbolos y palabras clave en el teclado.
+                            </p>
+                            <p style="font-size: 0.85rem; font-weight: 700; color: #55efc4;">
+                                🎯 <strong>¿Para qué sirve?</strong> Para dar instrucciones muy precisas a placas como Arduino, controlando motores y luces al milisegundo.
+                            </p>
+                        </div>
+
+                        <!-- Código en Python / Algoritmos -->
+                        <div style="background: rgba(255, 255, 255, 0.12); padding: 18px; border-radius: 16px; border: 2px dashed #a29bfe;">
+                            <h3 style="font-family: 'Fredoka', cursive; font-size: 1.3rem; color: #a29bfe; margin-bottom: 8px;">
+                                🐍 Python e Inteligencia Artificial
+                            </h3>
+                            <p style="font-size: 0.9rem; font-weight: 700; line-height: 1.4; color: #ffffff; margin-bottom: 8px;">
+                                <strong>¿Qué es?</strong> Un lenguaje de texto muy claro y fácil de leer, usado por profesionales de todo el mundo.
+                            </p>
+                            <p style="font-size: 0.85rem; font-weight: 700; color: #ffeaa7;">
+                                🎯 <strong>¿Para qué sirve?</strong> Para robots avanzados que procesan visión por cámara, reconocen voz o toman decisiones complejas.
+                            </p>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 1.9. SECCIÓN: TIPOS DE DATOS Y VALORES (INT, FLOAT, STRING, BOOL) -->
+    <section id="tipos-datos" class="hero-section" style="padding-top: 25px; padding-bottom: 0;">
+        <div class="poster-card">
+            <div class="inner-card" style="background: linear-gradient(135deg, #0984e3 0%, #6c5ce7 100%);">
+                <div class="hero-text" style="width: 100%;">
+                    <span class="badge-fun" style="background-color: #ffeaa7; color: #2d3436; box-shadow: 0 3px 0px #fdcb6e;">📊 VALORES DE PROGRAMACIÓN 📊</span>
+                    <h2 class="sub-title" style="color: #ffeaa7;">TIPOS DE DATOS</h2>
+                    <h1 class="main-title" style="font-size: 2.8rem;">¿CÓMO GUARDA INFORMACIÓN EL ROBOT?</h1>
+                    <p style="font-size: 1rem; font-weight: 700; color: #ffffff; margin-bottom: 15px;">
+                        Las <strong>variables</strong> son como cajitas guardadas en el cerebro del robot. Cada cajita almacena un tipo de valor específico:
+                    </p>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 18px; margin-top: 15px;">
+                        
+                        <!-- 1. INT -->
+                        <div style="background: rgba(255, 255, 255, 0.15); padding: 16px; border-radius: 16px; border: 2px dashed #fbc531;">
+                            <h3 style="font-family: 'Fredoka', cursive; font-size: 1.3rem; color: #fbc531; margin-bottom: 6px;">
+                                🔢 Entero (int)
+                            </h3>
+                            <p style="font-size: 0.88rem; font-weight: 700; line-height: 1.3; color: #ffffff;">
+                                <strong>¿Qué guarda?</strong> Números enteros positivos o negativos (sin decimales).
+                            </p>
+                            <p style="font-size: 0.82rem; font-weight: 800; color: #ffeaa7; margin-top: 6px; background: rgba(0,0,0,0.2); padding: 5px 8px; border-radius: 8px;">
+                                💡 Ej: <code>int velocidad = 100;</code><br><code>int nivel = 5;</code>
+                            </p>
+                        </div>
+
+                        <!-- 2. FLOAT -->
+                        <div style="background: rgba(255, 255, 255, 0.15); padding: 16px; border-radius: 16px; border: 2px dashed #00b894;">
+                            <h3 style="font-family: 'Fredoka', cursive; font-size: 1.3rem; color: #55efc4; margin-bottom: 6px;">
+                                📐 Decimal (float / double)
+                            </h3>
+                            <p style="font-size: 0.88rem; font-weight: 700; line-height: 1.3; color: #ffffff;">
+                                <strong>¿Qué guarda?</strong> Números que contienen puntos decimales para mediciones precisas.
+                            </p>
+                            <p style="font-size: 0.82rem; font-weight: 800; color: #55efc4; margin-top: 6px; background: rgba(0,0,0,0.2); padding: 5px 8px; border-radius: 8px;">
+                                💡 Ej: <code>float distancia = 12.5;</code><br><code>float temp = 24.8;</code>
+                            </p>
+                        </div>
+
+                        <!-- 3. STRING / CHAR -->
+                        <div style="background: rgba(255, 255, 255, 0.15); padding: 16px; border-radius: 16px; border: 2px dashed #fd79a8;">
+                            <h3 style="font-family: 'Fredoka', cursive; font-size: 1.3rem; color: #ff7675; margin-bottom: 6px;">
+                                🔤 Texto (string / char)
+                            </h3>
+                            <p style="font-size: 0.88rem; font-weight: 700; line-height: 1.3; color: #ffffff;">
+                                <strong>¿Qué guarda?</strong> Palabras, letras o frases escritas siempre entre comillas.
+                            </p>
+                            <p style="font-size: 0.82rem; font-weight: 800; color: #ff7675; margin-top: 6px; background: rgba(0,0,0,0.2); padding: 5px 8px; border-radius: 8px;">
+                                💡 Ej: <code>string nombre = "Robo";</code><br><code>char estado = 'A';</code>
+                            </p>
+                        </div>
+
+                        <!-- 4. BOOL -->
+                        <div style="background: rgba(255, 255, 255, 0.15); padding: 16px; border-radius: 16px; border: 2px dashed #a29bfe;">
+                            <h3 style="font-family: 'Fredoka', cursive; font-size: 1.3rem; color: #a29bfe; margin-bottom: 6px;">
+                                🔘 Booleano (bool)
+                            </h3>
+                            <p style="font-size: 0.88rem; font-weight: 700; line-height: 1.3; color: #ffffff;">
+                                <strong>¿Qué guarda?</strong> Solamente 2 valores posibles: Verdadero (true) o Falso (false).
+                            </p>
+                            <p style="font-size: 0.82rem; font-weight: 800; color: #a29bfe; margin-top: 6px; background: rgba(0,0,0,0.2); padding: 5px 8px; border-radius: 8px;">
+                                💡 Ej: <code>bool encendido = true;</code><br><code>bool chocando = false;</code>
+                            </p>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 2. BANNER PÓSTER TIPO JUGUETE CON MASCOTA ROBOT -->
+    <section id="inicio" class="hero-section">
+        <div class="poster-card">
+            <div class="inner-card">
+                <div class="hero-text">
+                    <span class="badge-fun">⚡ ¡Aprende Jugando! ⚡</span>
+                    <h2 class="sub-title">CLASES DE</h2>
+                    <h1 class="main-title">ROBÓTICA</h1>
+                    <p class="description">
+                        ¡Aprende con juegos interactivos, misiones divertidas y profes geniales que hacen que aprender sea una súper aventura! 🚀
+                    </p>
+                    
+                    <div class="quick-buttons">
+                        <button onclick="seleccionarGrado('grado3')" class="btn-level-fun g3-btn">
+                            <span class="btn-icon">🔍</span>
+                            <span>Grado 3.°: Exploración</span>
+                        </button>
+                        <button onclick="seleccionarGrado('grado4')" class="btn-level-fun g4-btn">
+                            <span class="btn-icon">⚡</span>
+                            <span>Grado 4.°: Circuitos</span>
+                        </button>
+                        <button onclick="seleccionarGrado('grado5')" class="btn-level-fun g5-btn">
+                            <span class="btn-icon">🚀</span>
+                            <span>Grado 5.°: Algoritmos</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- MASCOTA EN SVG NATIVO -->
+                <div class="hero-robot">
+                    <svg class="robot-img" viewBox="0 0 200 220" width="220" height="220" xmlns="http://www.w3.org/2000/svg">
+                        <line x1="100" y1="30" x2="100" y2="10" stroke="#fbc531" stroke-width="6" stroke-linecap="round"/>
+                        <circle cx="100" cy="8" r="8" fill="#fd79a8" />
+                        <rect x="50" y="30" width="100" height="75" rx="18" fill="#00b894" stroke="#ffffff" stroke-width="4"/>
+                        <rect x="62" y="42" width="76" height="50" rx="10" fill="#2d3436"/>
+                        <circle cx="80" cy="65" r="9" fill="#fbc531" />
+                        <circle cx="82" cy="63" r="3" fill="#ffffff" />
+                        <circle cx="120" cy="65" r="9" fill="#fbc531" />
+                        <circle cx="122" cy="63" r="3" fill="#ffffff" />
+                        <path d="M 88 78 Q 100 88 112 78" stroke="#ffffff" stroke-width="3" fill="none" stroke-linecap="round"/>
+                        <rect x="38" y="52" width="12" height="20" rx="4" fill="#fbc531"/>
+                        <rect x="150" y="52" width="12" height="20" rx="4" fill="#fbc531"/>
+                        <rect x="90" y="105" width="20" height="12" fill="#a29bfe"/>
+                        <rect x="45" y="117" width="110" height="85" rx="20" fill="#6c5ce7" stroke="#ffffff" stroke-width="4"/>
+                        <circle cx="75" cy="145" r="8" fill="#fd79a8"/>
+                        <circle cx="100" cy="145" r="8" fill="#fbc531"/>
+                        <circle cx="125" cy="145" r="8" fill="#00b894"/>
+                        <rect x="65" y="165" width="70" height="22" rx="6" fill="#2d3436"/>
+                        <path d="M 72 176 L 85 170 L 98 180 L 115 170 L 128 176" stroke="#00b894" stroke-width="3" fill="none" stroke-linecap="round"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. SECCIÓN SELECCIÓN DE GRADO -->
+    <section id="niveles" class="section-container">
+        <h2 class="section-title">🌟 ¡ELIGE TU GRADO DE AVENTURA! 🌟</h2>
+        <p class="section-subtitle">Cada grado tiene 10 niveles esperándote</p>
+
+        <div class="grid-levels">
+            <!-- Grado 3 -->
+            <article id="card-grado3" class="card-level card-g3 active-grado">
+                <div class="level-badge bg-yellow">⭐ 10 NIVELES</div>
+                <div class="card-icon">🔍</div>
+                <h3>Grado 3.°</h3>
+                <h4>Exploración y Componentes</h4>
+                <p>¡Aprende sobre sensores, motores y los comandos básicos de un robot!</p>
+                <button onclick="seleccionarGrado('grado3')" class="btn-action bg-yellow-btn">¡Jugar Grado 3.°! 🚀</button>
+            </article>
+
+            <!-- Grado 4 -->
+            <article id="card-grado4" class="card-level card-g4">
+                <div class="level-badge bg-mint">⭐⭐ 10 NIVELES</div>
+                <div class="card-icon">💡</div>
+                <h3>Grado 4.°</h3>
+                <h4>Circuitos y Sensores</h4>
+                <p>¡Leds, servomotores, cables y lógica de programación básica!</p>
+                <button onclick="seleccionarGrado('grado4')" class="btn-action bg-mint-btn">¡Jugar Grado 4.°! 🚀</button>
+            </article>
+
+            <!-- Grado 5 -->
+            <article id="card-grado5" class="card-level card-g5">
+                <div class="level-badge bg-pink">⭐⭐⭐ 10 NIVELES</div>
+                <div class="card-icon">🧠</div>
+                <h3>Grado 5.°</h3>
+                <h4>Algoritmos y Mecatrónica</h4>
+                <p>¡Condicionales (IF/ELSE), bucles, microcontroladores y retos avanzados!</p>
+                <button onclick="seleccionarGrado('grado5')" class="btn-action bg-pink-btn">¡Jugar Grado 5.°! 🚀</button>
+            </article>
+        </div>
+    </section>
+
+    <!-- 4. MAPA INTERACTIVO DE NIVELES (DENTRO DEL GRADO SELECCIONADO) -->
+    <section id="mapa-programacion" class="section-container bg-interactive-section">
+        <div class="mapa-header">
+            <h2 id="titulo-grado-actual" class="section-title">🎮 NIVELES: GRADO 3.°</h2>
+            <p class="section-subtitle">Supera los 10 retos en orden. ¡Responde bien para avanzar al siguiente nivel!</p>
+            <button class="btn-reset" onclick="reiniciarProgresoGradoActual()">🔄 Reiniciar Progreso de este Grado</button>
+        </div>
+
+        <!-- AQUÍ SE RENDERIZAN LOS 10 NIVELES AUTOMÁTICAMENTE -->
+        <div id="grid-niveles-juego" class="grid-niveles-container"></div>
+    </section>
+
+    <!-- 4.5. SECCIÓN ROBOTKITS (MÓDULO INTERACTIVO DE PROGRAMACIÓN SECUENCIAL) -->
+    <section id="robotkits-app" class="section-container" style="padding-top: 20px;">
+        <div class="poster-card" style="max-width: 100%;">
+            <div class="inner-card" style="background: linear-gradient(135deg, #1C2049 0%, #12142B 100%); flex-direction: column; align-items: stretch; clip-path: none;">
+                <div id="rk-topbar" class="topbar">
+                    <div class="logo" onclick="rkShowHome()">
+                        <div class="logo-badge">🤖</div>
+                        <div class="logo-text">Robot<b>Kits</b></div>
+                    </div>
+                    <div class="topbar-right">
+                        <div class="points-pill">⭐ <span id="rk-pts">0</span> pts</div>
+                        <button class="robot-btn" onclick="rkOpenWorkshop()">🛠️ Taller Robot</button>
+                    </div>
+                </div>
+                
+                <div id="rk-screen-container" class="screen" style="margin-top: 15px;">
+                    <!-- Se carga dinámicamente el contenido de RobotKits -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5. PANTALLA / MODAL INTERACTIVA CON RETO / PREGUNTA DE CÓDIGO Y COMPONENTES -->
+    <div id="modal-pantalla-nivel" class="modal-overlay">
+        <div class="modal-content">
+            <button class="btn-cerrar-modal" onclick="cerrarNivel()">✖</button>
+            <h2 id="nivel-titulo-modal">Nivel 1</h2>
+            
+            <div class="area-mision">
+                <p><b>🎯 Misión:</b> <span id="nivel-objetivo-text">Cargando...</span></p>
+                <p style="margin-top: 10px;"><b>❓ Pregunta / Reto:</b></p>
+                <p id="nivel-pregunta-text" class="pregunta-destacada">Cargando...</p>
+            </div>
+
+            <!-- MENSAJE DE FEEDBACK ERROR / ÉXITO -->
+            <div id="mensaje-feedback" class="feedback-box" style="display: none;"></div>
+
+            <!-- OPCIONES DE RESPUESTA MULTIPLE -->
+            <div id="opciones-respuesta" class="grid-opciones"></div>
+        </div>
+    </div>
+
+    <!-- MODAL TALLER ROBOT (ROBOTKITS WORKSHOP) -->
+    <div id="rk-workshop-modal" class="workshop-overlay" style="display: none;">
+        <div class="workshop-panel">
+            <button class="close-x" onclick="rkCloseWorkshop()">✖</button>
+            <h2>🛠️ Taller Robot</h2>
+            <div class="sub">¡Gana puntos completando niveles para desbloquear partes!</div>
+            
+            <div class="workshop-progress">
+                <div id="rk-workshop-bar" style="width: 0%;"></div>
+            </div>
+
+            <div class="robot-stage">
+                <div id="rk-p-feet" class="part p-feet"></div>
+                <div id="rk-p-legs" class="part p-legs"></div>
+                <div id="rk-p-torso" class="part p-torso"></div>
+                <div id="rk-p-arm-l" class="part p-arm-l"></div>
+                <div id="rk-p-arm-r" class="part p-arm-r"></div>
+                <div id="rk-p-head" class="part p-head"></div>
+                <div id="rk-p-visor" class="part p-visor"></div>
+                <div id="rk-p-antenna" class="part p-antenna"></div>
+                <div id="rk-p-light" class="part p-light"></div>
+                <div id="rk-p-jetpack" class="part p-jetpack"></div>
+                <div id="rk-p-jetpack2" class="part p-jetpack2"></div>
+            </div>
+
+            <div id="rk-parts-list" class="parts-list"></div>
+        </div>
+    </div>
+
+    <!-- 6. PIE DE PÁGINA DIVERTIDO -->
+    <footer class="main-footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <h3>🤖 ROBOKIDS</h3>
+                <p>Aprendiendo tecnología, programación y robótica mientras nos divertimos.</p>
+            </div>
+            <div class="footer-contact">
+                <h4>📞 MÁS INFORMACIÓN:</h4>
+                <p>🌐 www.iessanmateo.edu.co/</p>
+                <p>📱 318-607-8042</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>🎈 © 2026 RoboKids - Proyecto Educativo de Robótica para Niños diseñada por la institucion educativa san mateo IESMA</p>
+        </div>
+    </footer>
+
+    <!-- ARCHIVO DE LÓGICA DE NIVELES Y ROBOTKITS -->
+    <script src="script.js"></script>
+</body>
+</html>
