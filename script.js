@@ -1,532 +1,665 @@
-// =======================================================
-// 1. LÓGICA DE NIVELES POR GRADOS (ROBOKIDS ORIGINAL)
-// =======================================================
+/* =========================================
+   ROBOKIDS - SCRIPT INTERACTIVO PRINCIPAL
+   ========================================= */
 
-const datosNiveles = {
+// --- ESTADO GLOBAL DE LA APLICACIÓN ---
+let estadoApp = {
+    puntos: 0,
+    gradoActual: 'grado3',
+    nivelSeleccionado: null,
+    progreso: {
+        grado3: Array(20).fill('pendiente'),
+        grado4: Array(20).fill('pendiente'),
+        grado5: Array(20).fill('pendiente')
+    },
+    partesRobot: {
+        cabeza: '🤖',
+        cuerpo: '📦',
+        brazos: '💪',
+        piernas: '🛞',
+        accesorio: '✨'
+    }
+};
+
+// --- BANCO DE PREGUNTAS ÚNICAS POR GRADO Y NIVEL ---
+const preguntasBD = {
     grado3: [
-        { id: 1, titulo: "Nivel 1: ¿Qué es un Robot?", objetivo: "Identificar la definición de robot.", pregunta: "¿Qué es un robot?", opciones: ["Un juguete de cuerda sin energía.", "Una máquina programable que realiza acciones automáticas.", "Una pantalla para ver videos."], correcta: 1 },
-        { id: 2, titulo: "Nivel 2: El Cerebro del Robot", objetivo: "Reconocer qué componente procesa la información.", pregunta: "¿Cuál es el 'cerebro' que ejecuta el código en un robot?", opciones: ["Las ruedas", "La batería", "El microcontrolador / procesador"], correcta: 2 },
-        { id: 3, titulo: "Nivel 3: El Sentido de la Vista", objetivo: "Identificar el sensor que detecta distancia.", pregunta: "¿Qué componente le ayuda al robot a medir la distancia a un obstáculo?", opciones: ["Sensor Ultrasonido", "Un foco LED", "Un motor"], correcta: 0 },
-        { id: 4, titulo: "Nivel 4: Moviendo al Robot", objetivo: "Saber qué componente genera el movimiento.", pregunta: "¿Qué componente necesita el robot para girar sus ruedas?", opciones: ["Sensor de luz", "Servomotor / Motor DC", "Cable USB"], correcta: 1 },
-        { id: 5, titulo: "Nivel 5: Primer Comando", objetivo: "Elegir el código correcto para avanzar.", pregunta: "Queremos que el robot vaya hacia adelante. ¿Qué bloque de código usamos?", opciones: ["AVANZAR(1)", "DETENER()", "GIRAR_IZQUIERDA()"], correcta: 0 },
-        { id: 6, titulo: "Nivel 6: Detección de Obstáculos", objetivo: "Usar condicional simple.", pregunta: "Si el robot encuentra una pared enfrente, ¿qué comando debe ejecutar?", opciones: ["AVANZAR(5)", "GIRAR_DERECHA()", "APAGAR()"], correcta: 1 },
-        { id: 7, titulo: "Nivel 7: La Energía del Robot", objetivo: "Reconocer la fuente de energía.", pregunta: "¿De dónde obtiene energía un robot móvil para funcionar?", opciones: ["De la batería", "Del motor", "Del sensor"], correcta: 0 },
-        { id: 8, titulo: "Nivel 8: Secuencia de Pasos", objetivo: "Ordenar comandos para formar una ruta.", pregunta: "Para hacer un cuadrado, el robot avanza y luego debe...", opciones: ["Apagarse", "Girar 90°", "Dar reversa"], correcta: 1 },
-        { id: 9, titulo: "Nivel 9: El Sensor de Tacto", objetivo: "Reconocer un botón o pulsador.", pregunta: "¿Qué componente detecta cuando el robot choca directamente contra un objeto?", opciones: ["Sensor de colisión / Pulsador", "LED brillante", "Bocina"], correcta: 0 },
-        { id: 10, titulo: "Nivel 10: Algoritmo Completo", objetivo: "Completar la secuencia para llegar a la meta.", pregunta: "¿Cuál secuencia hace que el robot dé 2 pasos y gire?", opciones: ["AVANZAR(1) -> GIRAR()", "AVANZAR(1) -> AVANZAR(1) -> GIRAR()", "GIRAR() -> DETENER()"], correcta: 1 }
+        {
+            id: 1,
+            mision: "Descubriendo componentes (Fase 1)",
+            pregunta: "¿Cuál es la función principal de un robot?",
+            opciones: ["Ayudar a resolver tareas y automatizar procesos.", "Comer galletas con leche en el desayuno.", "Dormir todo el día en el sofá de la sala.", "Procesar datos en la nube sin hardware."],
+            correcta: 0
+        },
+        {
+            id: 2,
+            mision: "Descubriendo componentes (Fase 2)",
+            pregunta: "¿Qué es un algoritmo en la programación?",
+            opciones: ["Un paso de baile muy famoso en internet.", "Una secuencia ordenada de instrucciones para resolver un problema.", "Una marca de videojuegos portátil.", "Un tipo de cable de corriente."],
+            correcta: 1
+        },
+        {
+            id: 3,
+            mision: "Descubriendo componentes (Fase 3)",
+            pregunta: "¿Qué lenguaje usamos principalmente para darle estilo y diseño a una página web?",
+            opciones: ["CSS (Cascading Style Sheets)", "Un taladro eléctrico de banco", "Aceite de motor sintético", "Arduino C++ avanzado"],
+            correcta: 0
+        },
+        {
+            id: 4,
+            mision: "Descubriendo componentes (Fase 4)",
+            pregunta: "¿Qué elemento físico permite que un robot detecte obstáculos en su camino?",
+            opciones: ["Un altavoz de música", "Un sensor de ultrasonido o infrarrojo", "Una taza de café caliente", "Un archivo de imagen PNG"],
+            correcta: 1
+        },
+        {
+            id: 5,
+            mision: "Descubriendo componentes (Fase 5)",
+            pregunta: "¿Cómo se le llama a la estructura física y mecánica de un robot que podemos tocar?",
+            opciones: ["Hardware", "Software", "Red Wi-Fi", "Algoritmo lógico"],
+            correcta: 0
+        },
+        {
+            id: 6,
+            mision: "Descubriendo componentes (Fase 6)",
+            pregunta: "¿Qué término usamos cuando encontramos y corregimos un error en el código?",
+            opciones: ["Formatear la pantalla", "Debugging (Depuración)", "Descargar archivos", "Apagar el monitor"],
+            correcta: 1
+        },
+        {
+            id: 7,
+            mision: "Descubriendo componentes (Fase 7)",
+            pregunta: "¿Qué estructura de código usamos para repetir una tarea varias veces sin escribirla de nuevo?",
+            opciones: ["Un bucle o ciclo (Loop)", "Un botón de apagado general", "Una variable invisible", "Una hoja de cálculo"],
+            correcta: 0
+        },
+        {
+            id: 8,
+            mision: "Descubriendo componentes (Fase 8)",
+            pregunta: "¿Cuál es el componente que actúa como el 'cerebro' principal procesando datos en una computadora?",
+            opciones: ["El ratón (Mouse)", "El procesador (CPU)", "El cable de corriente", "El teclado numérico"],
+            correcta: 1
+        },
+        {
+            id: 9,
+            mision: "Descubriendo componentes (Fase 9)",
+            pregunta: "¿Qué significan las siglas HTML en el desarrollo web?",
+            opciones: ["HyperText Markup Language", "Hyper Tool Mega Logic", "Home Tech Modern Light", "Hardware Total Machine Logic"],
+            correcta: 0
+        },
+        {
+            id: 10,
+            mision: "Descubriendo componentes (Fase 10)",
+            pregunta: "¿Para qué sirve una 'variable' en programación?",
+            opciones: ["Para guardar y almacenar datos o valores (como puntos o nombres).", "Para cambiar de color la pantalla aleatoriamente cada segundo.", "Para desconectar el internet de la casa.", "Para congelar el navegador web."],
+            correcta: 0
+        },
+        {
+            id: 11,
+            mision: "Descubriendo componentes (Fase 11)",
+            pregunta: "Si un bucle se repite mientras 'camino < 5 pasos', ¿cuántas veces avanza?",
+            opciones: ["10 pasos exactos", "5 pasos (del 0 al 4)", "Ningún paso", "Infinitas veces"],
+            correcta: 1
+        },
+        {
+            id: 12,
+            mision: "Descubriendo componentes (Fase 12)",
+            pregunta: "En diseño web responsivo, ¿qué herramienta adaptamos para celulares y computadoras?",
+            opciones: ["Las consultas de medios (Media Queries)", "Pegamento escolar blanco", "Una antena parabólica casera", "Un destornillador de estrella"],
+            correcta: 0
+        },
+        {
+            id: 13,
+            mision: "Descubriendo componentes (Fase 13)",
+            pregunta: "¿Qué operador lógico usamos si queremos que se cumplan ambas condiciones al mismo tiempo?",
+            opciones: ["Operador O (OR)", "Operador Y (AND)", "Operador NO (NOT)", "Operador de suma simple"],
+            correcta: 1
+        },
+        {
+            id: 14,
+            mision: "Descubriendo componentes (Fase 14)",
+            pregunta: "¿Cuál es una buena práctica de ciberseguridad al crear tus claves de usuario?",
+            opciones: ["Usar tu fecha de nacimiento o '12345'", "Combinar letras mayúsculas, minúsculas, números y símbolos", "Anotar la contraseña en un papel en la frente", "Compartirla con todo el mundo"],
+            correcta: 1
+        },
+        {
+            id: 15,
+            mision: "Descubriendo componentes (Fase 15)",
+            pregunta: "¿Qué tipo de lenguaje de programación se asemeja a armar fichas de colores o LEGOs?",
+            opciones: ["Programación por bloques", "Ensamblador puro", "C++ avanzado", "Binario puro de 64 bits"],
+            correcta: 0
+        },
+        {
+            id: 16,
+            mision: "Descubriendo componentes (Fase 16)",
+            pregunta: "¿Qué plataforma en la nube utilizamos para guardar repositorios de código y proyectos?",
+            opciones: ["GitHub", "Un horno microondas digital", "Una memoria USB de madera", "Un reproductor de CD"],
+            correcta: 0
+        },
+        {
+            id: 17,
+            mision: "Descubriendo componentes (Fase 17)",
+            pregunta: "¿Qué significa optimizar el código de un programa?",
+            opciones: ["Hacer que corra más rápido y con un uso eficiente de recursos.", "Borrar todo el proyecto por accidente.", "Pintar el monitor de color verde.", "Aumentar los errores intencionalmente."],
+            correcta: 0
+        },
+        {
+            id: 18,
+            mision: "Descubriendo componentes (Fase 18)",
+            pregunta: "¿Qué es una función reutilizable en JavaScript?",
+            opciones: ["Un bloque de código con nombre que podemos invocar cuantas veces queramos.", "Un error que congela la pestaña del navegador.", "Una imagen en formato PNG.", "Un componente de hardware externo."],
+            correcta: 0
+        },
+        {
+            id: 19,
+            mision: "Descubriendo componentes (Fase 19)",
+            pregunta: "¿Qué tecnología simula la inteligencia humana en máquinas y aplicaciones?",
+            opciones: ["Inteligencia Artificial (IA)", "Un espejo retrovisor", "Electricidad estática", "Un circuito cerrado simple"],
+            correcta: 0
+        },
+        {
+            id: 20,
+            mision: "Descubriendo componentes (Fase 20)",
+            pregunta: "¡Último reto de Grado 3.°! ¿Cuál es el secreto de un gran programador y creador tecnológico?",
+            opciones: ["Nunca rendirse ante un error y practicar todos los días con curiosidad.", "Saber apagar la computadora con una patada.", "Memorizarse todo internet en un segundo.", "No probar nunca sus propios programas."],
+            correcta: 0
+        }
     ],
     grado4: [
-        { id: 1, titulo: "Nivel 1: Circuitos Eléctricos", objetivo: "Comprender la ruta de la corriente.", pregunta: "¿Qué es un circuito eléctrico cerrado?", opciones: ["Un camino continuo por donde fluye la electricidad.", "Un cable cortado por la mitad.", "Una batería apagada."], correcta: 0 },
-        { id: 2, titulo: "Nivel 2: Luces Indicadoras", objetivo: "Aprender sobre LEDs.", pregunta: "¿Qué componente se usa para que el robot emita luz cuando encuentra algo?", opciones: ["Buzzer", "Diodo LED", "Resistencia"], correcta: 1 },
-        { id: 3, titulo: "Nivel 3: Protegiendo Componentes", objetivo: "Identificar la función de la resistencia.", pregunta: "¿Para qué sirve una resistencia en un circuito?", opciones: ["Para dar más energía al robot.", "Para limitar la corriente y no quemar el LED.", "Para mover las ruedas."], correcta: 1 },
-        { id: 4, titulo: "Nivel 4: Sensor de Luz (LDR)", objetivo: "Detectar cambios de iluminación.", pregunta: "¿Qué sensor usamos si queremos que el robot siga una línea negra en el suelo?", opciones: ["Sensor de luz / LDR / Infrarrojo", "Sensor de sonido", "Termómetro"], correcta: 0 },
-        { id: 5, titulo: "Nivel 5: Bucles Repetir", objetivo: "Usar estructuras de repetición.", pregunta: "En código, si queremos repetir 'AVANZAR' 4 veces, ¿qué estructura usamos?", opciones: ["BUCLE REPETIR 4 VECES", "SI... ENTONCES", "DETENER"], correcta: 0 },
-        { id: 6, titulo: "Nivel 6: Interruptores", objetivo: "Comprender el control manual.", pregunta: "¿Qué componente abre o cierra el paso de corriente al presionarlo?", opciones: ["Un switch / interruptor", "Un motor", "Una rueda"], correcta: 0 },
-        { id: 7, titulo: "Nivel 7: Código de Luces Intermitentes", objetivo: "Programar un LED parapadeante.", pregunta: "¿Qué secuencia hace titilar una luz LED?", opciones: ["ENCENDER -> ESPERAR(1s) -> APAGAR -> ESPERAR(1s)", "ENCENDER -> ENCENDER", "APAGAR -> DETENER"], correcta: 0 },
-        { id: 8, titulo: "Nivel 8: Motores con Reductor", objetivo: "Entender el torque y fuerza.", pregunta: "¿Para qué se usa una caja reductora junto al motor del robot?", opciones: ["Para ganar fuerza (torque) y controlar la velocidad.", "Para consumir más batería.", "Para cambiar el color del robot."], correcta: 0 },
-        { id: 9, titulo: "Nivel 9: Variables de Velocidad", objetivo: "Aprender sobre variables.", pregunta: "Si creamos la variable `int velocidad = 100;`, ¿qué pasa si cambiamos a `velocidad = 50;`?", opciones: ["El robot irá más rápido.", "El robot irá a la mitad de velocidad.", "El robot se apaga."], correcta: 1 },
-        { id: 10, titulo: "Nivel 10: Reto de Circuito y Código", objetivo: "Integrar sensores y motores.", pregunta: "Si `sensor_luz < 30` (está oscuro), ¿qué instrucción debe ejecutar el robot?", opciones: ["ENCENDER_FAROS()", "APAGAR_TODO()", "GIRAR_EN_CIRCULOS()"], correcta: 0 }
+        {
+            id: 1,
+            mision: "Lógica de circuitos (Fase 1)",
+            pregunta: "¿Qué componente electrónico almacena temporalmente carga eléctrica en un circuito?",
+            opciones: ["El condensador (capacitor)", "Un cable de cobre plano", "Una resistencia de carbón", "Un interruptor manual"],
+            correcta: 0
+        },
+        {
+            id: 2,
+            mision: "Lógica de circuitos (Fase 2)",
+            pregunta: "¿Cómo se conecta correctamente este sensor o actuador en la protoboard?",
+            opciones: ["En serie con resistencia", "Directo a VCC y GND", "A un pin analógico/digital", "Todas las anteriores"],
+            correcta: 3
+        },
+        {
+            id: 3,
+            mision: "Lógica de circuitos (Fase 3)",
+            pregunta: "¿Cuál es la unidad de medida de la resistencia eléctrica?",
+            opciones: ["Ohmios (Ω)", "Voltios (V)", "Amperios (A)", "Watts (W)"],
+            correcta: 0
+        },
+        {
+            id: 4,
+            mision: "Lógica de circuitos (Fase 4)",
+            pregunta: "¿Qué función cumple un diodo LED dentro de un circuito básico?",
+            opciones: ["Emitir luz al pasar corriente eléctrica en sentido correcto", "Almacenar datos binarios en la nube", "Bloquear totalmente el voltaje sin pasar nada", "Generar sonido de alerta agudo"],
+            correcta: 0
+        },
+        {
+            id: 5,
+            mision: "Lógica de circuitos (Fase 5)",
+            pregunta: "¿Qué instrumento medidor utilizamos para comprobar el voltaje y la continuidad eléctrica?",
+            opciones: ["Un multímetro o tester", "Un compás de dibujo", "Un termómetro ambiental", "Una regla graduada"],
+            correcta: 0
+        },
+        {
+            id: 6,
+            mision: "Lógica de circuitos (Fase 6)",
+            pregunta: "¿Qué diferencia hay entre corriente continua (DC) y corriente alterna (AC)?",
+            opciones: ["La DC fluye en un solo sentido; la AC cambia de dirección periódicamente", "La AC solo sirve para protoboards pequeñas", "No existe ninguna diferencia técnica", "La DC se usa exclusivamente en plantas nucleares"],
+            correcta: 0
+        },
+        {
+            id: 7,
+            mision: "Lógica de circuitos (Fase 7)",
+            pregunta: "¿Qué es un servomotor y en qué se diferencia de un motor de corriente directa normal?",
+            opciones: ["Puede posicionarse con precisión en un ángulo específico (0 a 180 grados)", "Gira infinitamente sin control de velocidad", "Funciona únicamente con energía solar directa", "No requiere ningún tipo de conexión eléctrica"],
+            correcta: 0
+        },
+        {
+            id: 8,
+            mision: "Lógica de circuitos (Fase 8)",
+            pregunta: "¿Para qué sirve un protoboard o placa de pruebas sin soldadura?",
+            opciones: ["Para armar y probar circuitos electrónicos de forma rápida y sin quemar componentes", "Para soldar permanentemente piezas metálicas pesadas", "Para almacenar programas escritos en Python", "Para conectar la computadora al internet satelital"],
+            correcta: 0
+        },
+        {
+            id: 9,
+            mision: "Lógica de circuitos (Fase 9)",
+            pregunta: "¿Qué ley fundamental de la electricidad relaciona el voltaje, la corriente y la resistencia?",
+            opciones: ["La Ley de Ohm (V = I * R)", "La Ley de gravedad universal", "La Ley de termodinámica pura", "La Ley de los gases ideales"],
+            correcta: 0
+        },
+        {
+            id: 10,
+            mision: "Lógica de circuitos (Fase 10)",
+            pregunta: "¿Qué hace un sensor ultrasónico (como el HC-SR04)?",
+            opciones: ["Mide distancias rebotando ondas sonoras de alta frecuencia", "Detecta la temperatura corporal de las personas", "Mide la humedad del suelo de una planta", "Captura fotografías en alta definición"],
+            correcta: 0
+        },
+        {
+            id: 11,
+            mision: "Lógica de circuitos (Fase 11)",
+            pregunta: "¿Qué es un circuito en serie?",
+            opciones: ["Un circuito donde los componentes están conectados uno tras otro en una sola trayectoria", "Un circuito con múltiples caminos independientes para la corriente", "Un sistema que no tiene fuente de alimentación", "Un cable cortado por la mitad"],
+            correcta: 0
+        },
+        {
+            id: 12,
+            mision: "Lógica de circuitos (Fase 12)",
+            pregunta: "¿Qué es un circuito en paralelo?",
+            opciones: ["Un circuito con múltiples caminos donde la corriente se divide entre las ramas", "Un circuito donde los componentes se queman al instante", "Una línea recta sin conexiones secundarias", "Un esquema dibujado en papel bond"],
+            correcta: 0
+        },
+        {
+            id: 13,
+            mision: "Lógica de circuitos (Fase 13)",
+            pregunta: "¿Qué función cumple una resistencia eléctrica en un circuito con LEDs?",
+            opciones: ["Limitar el flujo de corriente para evitar que el LED se queme", "Aumentar el voltaje a niveles peligrosos", "Almacenar energía para emergencias", "Convertir la luz en sonido"],
+            correcta: 0
+        },
+        {
+            id: 14,
+            mision: "Lógica de circuitos (Fase 14)",
+            pregunta: "¿Qué es un pulsador (push button) normalmente abierto?",
+            opciones: ["Un interruptor que cierra el circuito solo mientras lo mantenemos presionado", "Un componente que se rompe al primer toque", "Una batería recargable pequeña", "Un sensor de luz infrarroja"],
+            correcta: 0
+        },
+        {
+            id: 15,
+            mision: "Lógica de circuitos (Fase 15)",
+            pregunta: "¿Qué componente se utiliza para detectar luz ambiental en un robot seguidor?",
+            opciones: ["Una fotorresistencia o sensor LDR", "Un motor paso a paso", "Un condensador electrolítico", "Un zumbador piezoeléctrico"],
+            correcta: 0
+        },
+        {
+            id: 16,
+            mision: "Lógica de circuitos (Fase 16)",
+            pregunta: "¿Qué es un zumbador (buzzer) activo en electrónica?",
+            opciones: ["Un componente que emite un tono acústico al recibir corriente directa", "Un ventilador para enfriar el procesador", "Una pantalla LCD táctil", "Un sensor de movimiento magnético"],
+            correcta: 0
+        },
+        {
+            id: 17,
+            mision: "Lógica de circuitos (Fase 17)",
+            pregunta: "¿Qué precaución debemos tener siempre antes de alimentar un circuito en la protoboard?",
+            opciones: ["Revisar las polaridades (positivo y negativo) para evitar cortocircuitos", "Tocar los cables con las manos mojadas", "Desconectar la pantalla de la computadora", "Pintar los componentes con marcador"],
+            correcta: 0
+        },
+        {
+            id: 18,
+            mision: "Lógica de circuitos (Fase 18)",
+            pregunta: "¿Qué es un circuito integrado (chip)?",
+            opciones: ["Un conjunto de circuitos electrónicos miniaturizados en un pequeño encapsulado de silicio", "Un cable USB muy largo", "Una placa de madera pintada", "Un tipo de pila alcalina"],
+            correcta: 0
+        },
+        {
+            id: 19,
+            mision: "Lógica de circuitos (Fase 19)",
+            pregunta: "¿Qué componente permite modular la velocidad de un motor DC mediante una perilla giratoria?",
+            opciones: ["Un potenciómetro (resistencia variable)", "Un diodo LED rojo", "Un cable de fibra óptica", "Una resistencia fija de carbón"],
+            correcta: 0
+        },
+        {
+            id: 20,
+            mision: "Lógica de circuitos (Fase 20)",
+            pregunta: "¡Excelente trabajo en Grado 4.°! ¿Qué habilidad clave consolida un experto en circuitos?",
+            opciones: ["Diseñar, conectar y depurar sistemas electrónicos seguros y funcionales", "Dejar los cables sueltos al azar", "Ignorar las normas de voltaje", "Trabajar sin verificar conexiones"],
+            correcta: 0
+        }
     ],
     grado5: [
-        { id: 1, titulo: "Nivel 1: Condicionales IF", objetivo: "Evaluar decisiones lógicas en código.", pregunta: "¿Qué hace la instrucción `IF (distancia < 10)`?", opciones: ["Verifica si hay un objeto a menos de 10 cm.", "Suma 10 a la distancia.", "Repite el código 10 veces."], correcta: 0 },
-        { id: 2, titulo: "Nivel 2: Condicionales IF / ELSE", objetivo: "Usar caminos alternativos.", pregunta: "En `IF (obstaculo) { DETENER() } ELSE { AVANZAR() }`, ¿qué hace el robot si NO hay obstáculo?", opciones: ["Se detiene", "Avanza", "Gira sin parar"], correcta: 1 },
-        { id: 3, titulo: "Nivel 3: El Microcontrolador Arduino", objetivo: "Identificar pines de entrada y salida.", pregunta: "¿Qué tipo de pin usas para leer los datos de un sensor?", opciones: ["Pin de Entrada (INPUT)", "Pin de Salida (OUTPUT)", "Pin de Tierra (GND)"], correcta: 0 },
-        { id: 4, titulo: "Nivel 4: Servomotor de Precisión", objetivo: "Controlar ángulos exactos.", pregunta: "A diferencia de un motor normal, ¿qué nos permite hacer un servomotor?", opciones: ["Moverse a ángulos precisos (ej: girar a 90°).", "Dar vueltas infinitas sin parar.", "Generar luz."], correcta: 0 },
-        { id: 5, titulo: "Nivel 5: Bucles WHILE", objetivo: "Repetir mientras una condición sea verdadera.", pregunta: "¿Cuándo se detiene un bucle `WHILE (bateria > 0)`?", opciones: ["Cuando la batería llega a 0.", "Inmediatamente después del primer paso.", "Nunca se detiene."], correcta: 0 },
-        { id: 6, titulo: "Nivel 6: Puentes H (Controlador de Motores)", objetivo: "Control de dirección de motores.", pregunta: "¿Qué componente nos permite cambiar la dirección de giro de los motores en robótica?", opciones: ["Módulo Driver / Puente H (L298N)", "Sensor de humedad", "Pantalla LCD"], correcta: 0 },
-        { id: 7, titulo: "Nivel 7: Lectura de Señales Analógicas vs Digitales", objetivo: "Diferenciar tipos de señales.", pregunta: "¿Cuál es una señal digital pura?", opciones: ["Una lectura de temperatura de 24.5 °C.", "Un estado de Encendido (1) o Apagado (0).", "El nivel de brillo gradual de una lámpara."], correcta: 1 },
-        { id: 8, titulo: "Nivel 8: Protocolo de Comunicación", objetivo: "Módulos de comunicación inalámbrica.", pregunta: "¿Qué componente le permite al robot recibir órdenes desde un teléfono celular?", opciones: ["Módulo Bluetooth / Wi-Fi", "Sensor infrarrojo", "Potenciómetro"], correcta: 0 },
-        { id: 9, titulo: "Nivel 9: Depuración (Debugging)", objetivo: "Encontrar errores en el código.", pregunta: "Si el robot gira en sentido contrario al programado, ¿cuál es el diagnóstico correcto?", opciones: ["El código está perfecto.", "Los cables del motor o los valores de salida están invertidos.", "Falta poner un LED."], correcta: 1 },
-        { id: 10, titulo: "Nivel 10: Gran Misión Mecatrónica", objetivo: "Integrar sensores, actuadores y lógica avanzada.", pregunta: "Diseña la lógica: 'Si detecta fuego (bool) Y la distancia (float) es menor a 20.0cm, apagar con la bomba de agua'. ¿Qué operadores usamos?", opciones: ["Operador Lógico AND (Y)", "Operador Lógico OR (O)", "Operador de Suma"], correcta: 0 }
+        {
+            id: 1,
+            mision: "Algoritmos y Mecatrónica (Fase 1)",
+            pregunta: "¿Qué es un diagrama de flujo en programación?",
+            opciones: ["Una representación gráfica y secuencial de un algoritmo usando símbolos estándar", "Un dibujo artístico libre sin reglas", "Un plano arquitectónico de una casa", "Una lista de compras del supermercado"],
+            correcta: 0
+        },
+        {
+            id: 2,
+            mision: "Algoritmos y Mecatrónica (Fase 2)",
+            pregunta: "¿Qué es una estructura condicional (como 'Si / If')?",
+            opciones: ["Una instrucción que toma decisiones basadas en si se cumple o no una condición", "Un bucle infinito que nunca se detiene", "Una variable que guarda números enteros", "Un error de sintaxis en el código"],
+            correcta: 0
+        },
+        {
+            id: 3,
+            mision: "Algoritmos y Mecatrónica (Fase 3)",
+            pregunta: "¿Qué es un vector o arreglo (array) en programación?",
+            opciones: ["Una estructura de datos que permite almacenar múltiples elementos bajo un mismo nombre", "Una sola variable que solo acepta una letra", "Un cable de conexión USB", "Un tipo de sensor de temperatura"],
+            correcta: 0
+        },
+        {
+            id: 4,
+            mision: "Algoritmos y Mecatrónica (Fase 4)",
+            pregunta: "¿Qué significa la programación orientada a eventos?",
+            opciones: ["Un paradigma donde el flujo del programa responde a acciones del usuario o sensores", "Un programa que solo corre una vez al año", "Una forma de apagar la computadora con música", "Un código escrito en papel"],
+            correcta: 0
+        },
+        {
+            id: 5,
+            mision: "Algoritmos y Mecatrónica (Fase 5)",
+            pregunta: "¿Qué es un operador de comparación en código (ej. ==, >, <)?",
+            opciones: ["Un símbolo para comparar dos valores y devolver verdadero o falso", "Un comando para sumar textos largos", "Una herramienta para borrar archivos", "Un tipo de bucle numérico"],
+            correcta: 0
+        },
+        {
+            id: 6,
+            mision: "Algoritmos y Mecatrónica (Fase 6)",
+            pregunta: "¿Qué diferencia hay entre un bucle For y un bucle While?",
+            opciones: ["El For se usa cuando sabemos cuántas repeticiones habrá; el While depende de una condición", "No hay ninguna diferencia en la práctica", "El While solo sirve para sumar", "El For congela el navegador siempre"],
+            correcta: 0
+        },
+        {
+            id: 7,
+            mision: "Algoritmos y Mecatrónica (Fase 7)",
+            pregunta: "¿Qué es la mecatrónica como disciplina tecnológica?",
+            opciones: ["La integración sinérgica de la mecánica, la electrónica, la informática y el control", "El estudio exclusivo de la química orgánica", "La reparación manual de bicicletas", "La creación de páginas web estáticas"],
+            correcta: 0
+        },
+        {
+            id: 8,
+            mision: "Algoritmos y Mecatrónica (Fase 8)",
+            pregunta: "¿Qué es una función con parámetros en programación?",
+            opciones: ["Un bloque de código reutilizable que recibe datos de entrada para procesarlos", "Una variable global que nunca cambia", "Un error de compilación grave", "Un menú desplegable de HTML"],
+            correcta: 0
+        },
+        {
+            id: 9,
+            mision: "Algoritmos y Mecatrónica (Fase 9)",
+            pregunta: "¿Qué es un sistema embebido (embedded system)?",
+            opciones: ["Un sistema informático diseñado para realizar funciones dedicadas en un dispositivo (ej. Arduino)", "Una aplicación móvil de redes sociales", "Un archivo de texto plano en el escritorio", "Una hoja de cálculo de Excel"],
+            correcta: 0
+        },
+        {
+            id: 10,
+            mision: "Algoritmos y Mecatrónica (Fase 10)",
+            pregunta: "¿Qué significa el concepto de modularidad en el desarrollo de software?",
+            opciones: ["Dividir un programa grande en partes pequeñas, independientes y mantenibles", "Hacer todo el código en una sola línea larguísima", "Evitar el uso de funciones y variables", "Copiar códigos de internet sin revisar"],
+            correcta: 0
+        },
+        {
+            id: 11,
+            mision: "Algoritmos y Mecatrónica (Fase 11)",
+            pregunta: "¿Qué es una variable de tipo booleano (boolean)?",
+            opciones: ["Una variable que solo almacena dos estados: verdadero (true) o falso (false)", "Una variable para textos largos", "Un número decimal con muchos decimales", "Una imagen comprimida"],
+            correcta: 0
+        },
+        {
+            id: 12,
+            mision: "Algoritmos y Mecatrónica (Fase 12)",
+            pregunta: "¿Qué es la depuración (debugging) algorítmica avanzada?",
+            opciones: ["El proceso metódico de rastrear, aislar y corregir errores lógicos en el código", "Borrar todo el disco duro por si acaso", "Aumentar la velocidad del procesador", "Cambiar el fondo de pantalla"],
+            correcta: 0
+        },
+        {
+            id: 13,
+            mision: "Algoritmos y Mecatrónica (Fase 13)",
+            pregunta: "¿Qué es un sensor analógico frente a uno digital?",
+            opciones: ["El analógico entrega valores continuos en un rango; el digital estados discretos (0 o 1)", "El digital no necesita cables", "El analógico solo funciona con baterías agotadas", "Son exactamente lo mismo"],
+            correcta: 0
+        },
+        {
+            id: 14,
+            mision: "Algoritmos y Mecatrónica (Fase 14)",
+            pregunta: "¿Qué es un actuador en un sistema mecatrónico?",
+            opciones: ["Un dispositivo que transforma una señal eléctrica en una acción física o movimiento", "Un sensor que mide la luz ambiente", "Una línea de código en JavaScript", "Un conector USB dañado"],
+            correcta: 0
+        },
+        {
+            id: 15,
+            mision: "Algoritmos y Mecatrónica (Fase 15)",
+            pregunta: "¿Qué es un operador lógico AND (Y) en condiciones complejas?",
+            opciones: ["Devuelve verdadero solo si todas las condiciones evaluadas son verdaderas", "Devuelve verdadero si al menos una condición se cumple", "Invierte el estado de la variable", "Borra el búfer de memoria"],
+            correcta: 0
+        },
+        {
+            id: 16,
+            mision: "Algoritmos y Mecatrónica (Fase 16)",
+            pregunta: "¿Qué es la persistencia de datos con localStorage?",
+            opciones: ["Una herramienta para guardar información en el navegador del usuario localmente", "Un disco duro externo conectado por USB", "Una base de datos en la nube de pago mensual", "Un cable de red de alta velocidad"],
+            correcta: 0
+        },
+        {
+            id: 17,
+            mision: "Algoritmos y Mecatrónica (Fase 17)",
+            pregunta: "¿Qué es un algoritmo recursivo?",
+            opciones: ["Una función que se llama a sí misma para resolver subproblemas hasta un caso base", "Un bucle infinito sin salida", "Un error de sintaxis imperdonable", "Una animación en CSS"],
+            correcta: 0
+        },
+        {
+            id: 18,
+            mision: "Algoritmos y Mecatrónica (Fase 18)",
+            pregunta: "¿Qué es el control PID (Proporcional, Integral, Derivativo) en robótica?",
+            opciones: ["Un algoritmo de control realimentado para mantener una variable en su valor deseado", "Un juego de video en línea", "Un tipo de memoria RAM ultra rápida", "Un protocolo de internet inalámbrico"],
+            correcta: 0
+        },
+        {
+            id: 19,
+            mision: "Algoritmos y Mecatrónica (Fase 19)",
+            pregunta: "¿Qué es la programación asíncrona en JavaScript?",
+            opciones: ["Un modelo que permite ejecutar tareas en segundo plano sin bloquear el hilo principal", "Un código que se ejecuta al revés", "Un error de conexión Wi-Fi", "Una función matemática compleja"],
+            correcta: 0
+        },
+        {
+            id: 20,
+            mision: "Algoritmos y Mecatrónica (Fase 20)",
+            pregunta: "¡Felicidades, llegaste al nivel máximo! ¿Cuál es el siguiente paso para un gran ingeniero mecatrónico?",
+            opciones: ["Crear proyectos innovadores que combinen código, circuitos y creatividad para transformar el mundo", "Dejar de aprender y cerrar la computadora", "Borrar todos los repositorios de GitHub", "Trabajar únicamente con papel y lápiz"],
+            correcta: 0
+        }
     ]
 };
 
-let progresoTotal = JSON.parse(localStorage.getItem('roboKidsProgresoGrados')) || {
-    grado3: { nivelMaximo: 1, completados: [] },
-    grado4: { nivelMaximo: 1, completados: [] },
-    grado5: { nivelMaximo: 1, completados: [] }
-};
+const catalogoTiendaData = [
+    { id: 'cabeza_mech', tipo: 'cabeza', nombre: 'Cabeza Mech', icono: '🤖', costo: 50 },
+    { id: 'cabeza_alien', tipo: 'cabeza', nombre: 'Cabeza Alien', icono: '👽', costo: 100 },
+    { id: 'brazos_metal', tipo: 'brazos', nombre: 'Brazos Metal', icono: '🦾', costo: 75 },
+    { id: 'accesorio_rayo', tipo: 'accesorio', nombre: 'Accesorio Rayo', icono: '⚡', costo: 150 }
+];
 
-let gradoSeleccionado = 'grado3';
-let nivelActualId = null;
-
+// --- INICIALIZACIÓN AL CARGAR LA PÁGINA ---
 document.addEventListener('DOMContentLoaded', () => {
-    renderizarMapaNiveles();
-    rkInit();
+    cargarEstado();
+    renderizarTodo();
 });
 
-function seleccionarGrado(grado) {
-    gradoSeleccionado = grado;
-
-    document.querySelectorAll('.card-level').forEach(card => card.classList.remove('active-grado'));
-    const tarjetaActiva = document.getElementById(`card-${grado}`);
-    if (tarjetaActiva) tarjetaActiva.classList.add('active-grado');
-
-    const titulos = {
-        grado3: "🎮 NIVELES: GRADO 3.° (Exploración y Componentes)",
-        grado4: "🎮 NIVELES: GRADO 4.° (Circuitos y Sensores)",
-        grado5: "🎮 NIVELES: GRADO 5.° (Algoritmos y Mecatrónica)"
-    };
-    document.getElementById('titulo-grado-actual').innerText = titulos[grado];
-
+function renderizarTodo() {
+    actualizarPuntosUI();
     renderizarMapaNiveles();
-    document.getElementById('mapa-programacion').scrollIntoView({ behavior: 'smooth' });
+    renderizarTaller();
+    renderizarLogros();
 }
 
+function actualizarPuntosUI() {
+    document.getElementById('puntos-navbar').innerText = estadoApp.puntos;
+    document.getElementById('puntos-taller-display').innerText = estadoApp.puntos;
+}
+
+function seleccionarGrado(gradoKey) {
+    estadoApp.gradoActual = gradoKey;
+    
+    document.querySelectorAll('.card-level').forEach(card => card.classList.remove('active-grado'));
+    const cardActiva = document.getElementById(`card-${gradoKey}`);
+    if(cardActiva) cardActiva.classList.add('active-grado');
+
+    const nombres = { grado3: '3.°', grado4: '4.°', grado5: '5.°' };
+    document.getElementById('titulo-grado-actual').innerText = `🎮 NIVELES: GRADO ${nombres[gradoKey]}`;
+
+    renderizarMapaNiveles();
+    guardarEstado();
+}
+
+// --- RENDERIZAR MAPA DE NIVELES ---
 function renderizarMapaNiveles() {
-    const gridContainer = document.getElementById('grid-niveles-juego');
-    if (!gridContainer) return;
+    const contenedor = document.getElementById('grid-niveles-juego');
+    if(!contenedor) return;
+    contenedor.innerHTML = '';
 
-    gridContainer.innerHTML = '';
+    const estados = estadoApp.progreso[estadoApp.gradoActual];
 
-    const nivelesGrado = datosNiveles[gradoSeleccionado];
-    const progresoGrado = progresoTotal[gradoSeleccionado];
+    estados.forEach((est, idx) => {
+        const btn = document.createElement('button');
+        btn.className = `casilla-nivel estado-${est}`;
+        
+        let icono = idx + 1;
+        if(est === 'correcto') icono = '✅';
+        if(est === 'incorrecto') icono = '❌';
 
-    nivelesGrado.forEach((nivel) => {
-        const estaDesbloqueado = nivel.id <= progresoGrado.nivelMaximo;
-        const estaCompletado = progresoGrado.completados.includes(nivel.id);
+        btn.innerHTML = `<span>${icono}</span>`;
+        btn.onclick = () => abrirNivel(idx);
 
-        const card = document.createElement('div');
-        card.className = `level-node ${estaDesbloqueado ? 'unlocked' : 'locked'} ${estaCompletado ? 'completed' : ''}`;
-
-        card.innerHTML = `
-            <div class="node-number">${estaCompletado ? '✅' : (estaDesbloqueado ? nivel.id : '🔒')}</div>
-            <div class="node-title">${nivel.titulo}</div>
-            <div class="node-status">${estaCompletado ? '¡Completado!' : (estaDesbloqueado ? '¡Disponible!' : 'Bloqueado')}</div>
-        `;
-
-        if (estaDesbloqueado) {
-            card.addEventListener('click', () => abrirNivel(nivel.id));
-        }
-
-        gridContainer.appendChild(card);
+        contenedor.appendChild(btn);
     });
 }
 
-function abrirNivel(id) {
-    nivelActualId = id;
-    const datosNivel = datosNiveles[gradoSeleccionado].find(n => n.id === id);
+function abrirNivel(index) {
+    estadoApp.nivelSeleccionado = index;
+    const datosNivel = preguntasBD[estadoApp.gradoActual][index];
 
-    document.getElementById('nivel-titulo-modal').innerText = datosNivel.titulo;
-    document.getElementById('nivel-objetivo-text').innerText = datosNivel.objetivo;
+    document.getElementById('nivel-titulo-modal').innerText = `Nivel ${index + 1}`;
+    document.getElementById('nivel-objetivo-text').innerText = datosNivel.mision;
     document.getElementById('nivel-pregunta-text').innerText = datosNivel.pregunta;
 
-    const feedbackBox = document.getElementById('mensaje-feedback');
-    feedbackBox.style.display = 'none';
+    const feedback = document.getElementById('mensaje-feedback');
+    feedback.style.display = 'none';
 
-    const opcionesContainer = document.getElementById('opciones-respuesta');
-    opcionesContainer.innerHTML = '';
+    const opcionesContenedor = document.getElementById('opciones-respuesta');
+    opcionesContenedor.innerHTML = '';
 
-    datosNivel.opciones.forEach((opcion, index) => {
-        const btn = document.createElement('button');
-        btn.className = 'btn-opcion';
-        btn.innerText = `${String.fromCharCode(65 + index)}) ${opcion}`;
-        btn.onclick = () => verificarRespuesta(index, datosNivel.correcta);
-        opcionesContainer.appendChild(btn);
+    datosNivel.opciones.forEach((opc, opcIdx) => {
+        const btnOpc = document.createElement('button');
+        btnOpc.className = 'btn-opcion-respuesta';
+        btnOpc.innerText = opc;
+        btnOpc.onclick = () => verificarRespuesta(opcIdx, datosNivel.correcta);
+        opcionesContenedor.appendChild(btnOpc);
     });
 
     document.getElementById('modal-pantalla-nivel').classList.add('active');
 }
 
-function verificarRespuesta(indiceSeleccionado, indiceCorrecto) {
-    const feedbackBox = document.getElementById('mensaje-feedback');
-    feedbackBox.style.display = 'block';
+function verificarRespuesta(seleccionada, correcta) {
+    const feedback = document.getElementById('mensaje-feedback');
+    feedback.style.display = 'block';
 
-    if (indiceSeleccionado === indiceCorrecto) {
-        feedbackBox.className = 'feedback-box correcto';
-        feedbackBox.innerHTML = '🎉 ¡EXCELENTE! Respuesta correcta. ¡Nivel completado!';
-
-        setTimeout(() => {
-            completarNivelActual();
-        }, 1200);
-
+    if (seleccionada === correcta) {
+        estadoApp.puntos += 100;
+        estadoApp.progreso[estadoApp.gradoActual][estadoApp.nivelSeleccionado] = 'correcto';
+        feedback.className = 'feedback-box fb-exito';
+        feedback.innerText = '¡Correcto! 🎉 Ganaste +100 RoboPuntos.';
     } else {
-        feedbackBox.className = 'feedback-box error';
-        feedbackBox.innerHTML = '❌ ¡Ups! Esa no es la respuesta correcta. ¡Inténtalo de nuevo!';
+        estadoApp.puntos = Math.max(0, estadoApp.puntos - 25);
+        estadoApp.progreso[estadoApp.gradoActual][estadoApp.nivelSeleccionado] = 'incorrecto';
+        feedback.className = 'feedback-box fb-error';
+        feedback.innerText = '¡Oops! ❌ Perdiste 25 RoboPuntos. ¡Sigue intentando!';
     }
+
+    actualizarPuntosUI();
+    renderizarMapaNiveles();
+    guardarEstado();
+
+    setTimeout(() => {
+        cerrarNivel();
+    }, 1500);
 }
 
 function cerrarNivel() {
     document.getElementById('modal-pantalla-nivel').classList.remove('active');
 }
 
-function completarNivelActual() {
-    if (!nivelActualId) return;
-
-    const progresoGrado = progresoTotal[gradoSeleccionado];
-
-    if (!progresoGrado.completados.includes(nivelActualId)) {
-        progresoGrado.completados.push(nivelActualId);
-    }
-
-    if (nivelActualId >= progresoGrado.nivelMaximo && nivelActualId < 10) {
-        progresoGrado.nivelMaximo = nivelActualId + 1;
-    }
-
-    localStorage.setItem('roboKidsProgresoGrados', JSON.stringify(progresoTotal));
-
-    cerrarNivel();
-    renderizarMapaNiveles();
-}
-
 function reiniciarProgresoGradoActual() {
-    if (confirm(`¿Quieres reiniciar los 10 niveles del ${gradoSeleccionado.replace('grado', 'Grado ')}°?`)) {
-        progresoTotal[gradoSeleccionado] = { nivelMaximo: 1, completados: [] };
-        localStorage.setItem('roboKidsProgresoGrados', JSON.stringify(progresoTotal));
+    if(confirm('¿Seguro que quieres reiniciar el progreso de este grado?')) {
+        estadoApp.progreso[estadoApp.gradoActual] = Array(20).fill('pendiente');
         renderizarMapaNiveles();
+        guardarEstado();
     }
 }
 
+// --- RENDERIZAR TALLER Y TIENDA ---
+function renderizarTaller() {
+    document.getElementById('part-cabeza').innerText = estadoApp.partesRobot.cabeza;
+    document.getElementById('part-cuerpo').innerText = estadoApp.partesRobot.cuerpo;
+    document.getElementById('part-brazos').innerText = estadoApp.partesRobot.brazos;
+    document.getElementById('part-piernas').innerText = estadoApp.partesRobot.piernas;
+    document.getElementById('part-accesorio').innerText = estadoApp.partesRobot.accesorio;
 
-// =======================================================
-// 2. LÓGICA DE ROBOTKITS (MÓDULO INTERACTIVO DE SECUENCIAS)
-// =======================================================
+    const catalogo = document.getElementById('catalogo-piezas');
+    if(!catalogo) return;
+    catalogo.innerHTML = '';
 
-const ACTIONS = ['avanzar 1 paso','girar a la derecha','girar a la izquierda','recoger la gema','saltar el obstáculo','encender la luz','tocar la bocina','retroceder 1 paso','abrir la compuerta','detenerse'];
-const ROBOTS = ['Robi','Nex','Zeta','Byte','Chip','Volt','Pixel','Coda','Tronic','Sparky'];
-const OBJECTS = ['monedas','gemas','estrellas','tornillos','cajas','llaves','baterías','piezas','luces','engranajes'];
-
-function mkQ(text, correct, distractors, li, explain){
-    const idx = li % 4;
-    const opts = [];
-    let di = 0;
-    for(let i=0;i<4;i++){
-        if(i===idx){ opts.push(correct); } else { opts.push(distractors[di]); di++; }
-    }
-    return {text, options:opts, correct:idx, explain};
-}
-
-const B1_LESSONS = [
-    "¡Bienvenido a RobotKits! Un programa es una lista de instrucciones que el robot sigue, una por una, en orden.",
-    "El orden importa: si cambias el orden de las instrucciones, el robot puede terminar en un lugar totalmente distinto.",
-    "Cada instrucción es un paso pequeño y claro, como 'avanzar' o 'girar'. Al conjunto de pasos para resolver algo se le llama algoritmo.",
-    "Los robots no adivinan: hacen exactamente lo que dice cada instrucción, ni más ni menos.",
-    "Si falta una instrucción, el robot puede quedarse a mitad de camino o cometer un error.",
-    "Podemos escribir instrucciones de movimiento: avanzar, retroceder, girar a la derecha, girar a la izquierda.",
-    "Una secuencia es una serie de instrucciones que se ejecutan de principio a fin, sin saltarse ninguna.",
-    "Depurar significa encontrar y corregir un error en las instrucciones. ¡Todos los programadores depuran!",
-    "En la vida diaria también usamos algoritmos, como los pasos para prepararse un sándwich.",
-    "¡Repasemos! Ya sabes que un programa es una secuencia ordenada de instrucciones claras."
-];
-
-const B1_Q2 = [
-    {q:"¿Qué es un programa?", a:"Una lista ordenada de instrucciones para el robot", d:["Un dibujo del robot","El nombre del robot","Un tipo de batería"], e:"Un programa es la lista de pasos que el robot debe seguir en orden."},
-    {q:"¿Qué es un algoritmo?", a:"Los pasos para resolver un problema", d:["El color del robot","Un error del programa","Una pantalla táctil"], e:"Un algoritmo es una serie de pasos claros para lograr un objetivo."},
-    {q:"¿Por qué el orden de las instrucciones es importante?", a:"Porque cambiarlo puede cambiar el resultado", d:["No importa nunca","Solo importa el color","Solo importa la velocidad"], e:"El robot ejecuta las instrucciones en el orden exacto en que se escriben."},
-    {q:"¿Qué hace el robot si le falta una instrucción?", a:"Puede quedarse a medias o cometer un error", d:["Adivina lo que falta","Se apaga para siempre","Inventa una nueva instrucción"], e:"Los robots no adivinan: si falta un paso, la tarea queda incompleta."},
-    {q:"¿Qué es 'depurar' un programa?", a:"Buscar y corregir errores", d:["Pintarlo de otro color","Borrarlo por completo","Hacerlo más lento a propósito"], e:"Depurar es revisar el programa para encontrar y arreglar fallos."},
-    {q:"¿Cuál de estas es una instrucción válida para un robot?", a:"Avanzar 2 pasos", d:["Pensar bonito","Ser feliz","Tener hambre"], e:"Las instrucciones deben ser acciones claras y concretas."},
-    {q:"En la vida diaria, ¿cuál es un ejemplo de algoritmo?", a:"Los pasos para lavarse los dientes", d:["El color de tu mochila","Tu nombre completo","Tu comida favorita"], e:"Cualquier serie de pasos ordenados para lograr algo es un algoritmo."},
-    {q:"¿Qué significa 'secuencia' en programación?", a:"Instrucciones que se ejecutan una tras otra en orden", d:["Instrucciones que se ejecutan al azar","Un solo comando repetido","Una imagen del robot"], e:"Una secuencia respeta siempre el orden en que fue escrita."},
-    {q:"Si un robot debe 'girar y luego avanzar', ¿qué pasa si lo programamos al revés?", a:"El robot puede terminar en un lugar distinto", d:["No pasa nada diferente","El robot se rompe","El robot habla"], e:"Cambiar el orden cambia el camino que recorre el robot."},
-    {q:"¿Quién sigue exactamente las instrucciones, sin adivinar?", a:"El robot o la computadora", d:["El viento","La suerte","Un fantasma"], e:"Los robots hacen exactamente lo que dicen sus instrucciones."}
-];
-
-const B1_Q4 = [
-    {q:"Robi debe llegar a la puerta. Tiene 'avanzar' y 'girar', pero olvidamos 'abrir la puerta'. ¿Qué pasará?", a:"Robi llegará pero no podrá pasar", d:["Robi abrirá la puerta solo","Robi se irá volando","No pasa nada"], e:"Sin la instrucción de abrir, el robot no puede continuar."},
-    {q:"¿Cuál es el primer paso lógico para armar un sándwich?", a:"Sacar el pan", d:["Comer el sándwich","Guardar el plato","Lavar los platos"], e:"Siempre hay un primer paso necesario antes de los demás."},
-    {q:"Si cambias 'girar a la derecha' por 'girar a la izquierda' en el paso 2, ¿qué pasa con la ruta del robot?", a:"El robot toma un camino diferente", d:["El camino es igual","El robot se detiene solo","El robot vuelve al inicio automáticamente"], e:"Cambiar una instrucción cambia el resultado final."},
-    {q:"¿Qué pasos son necesarios para plantar una semilla?", a:"Cavar, poner la semilla, tapar con tierra, regar", d:["Cantar, bailar, saltar, reír","Cocinar, comer, dormir","Correr, saltar, nadar"], e:"Cada tarea real tiene una secuencia lógica de pasos."},
-    {q:"Un robot recibe: 1) avanzar 2) avanzar 3) girar. ¿Cuántos pasos avanza antes de girar?", a:"2 pasos", d:["1 paso","3 pasos","0 pasos"], e:"El robot avanza dos veces antes de llegar al paso de girar."},
-    {q:"¿Qué problema hay si le decimos al robot 'girar' sin decir hacia qué lado?", a:"La instrucción es incompleta y puede confundir al robot", d:["No hay ningún error","El robot elige el mejor lado","El robot ignora la instrucción sin problema"], e:"Las instrucciones deben ser precisas para que el robot las entienda."},
-    {q:"Para dibujar con el robot: primero bajar el lápiz, luego mover. ¿Qué pasa si mueves primero?", a:"El robot se mueve pero no dibuja nada", d:["Dibuja igual de bien","El lápiz se rompe","El robot se apaga"], e:"El orden de bajar el lápiz antes de mover es esencial para dibujar."},
-    {q:"¿Cuál es una buena secuencia para cepillarse los dientes?", a:"Mojar el cepillo, poner pasta, cepillar, enjuagar", d:["Enjuagar, cepillar, poner pasta, mojar el cepillo","Cepillar, mojar, enjuagar, poner pasta","Poner pasta, enjuagar, cepillar, mojar"], e:"Cada paso debe ir en el orden correcto para que la tarea funcione."},
-    {q:"Si el robot debe recoger 3 gemas en orden 1,2,3 pero las recoge 2,1,3, ¿qué salió mal?", a:"El orden de las instrucciones estaba cambiado", d:["Las gemas cambiaron de lugar solas","El robot tiene mala suerte","No salió nada mal"], e:"El robot solo puede seguir el orden que le dieron."},
-    {q:"Repaso: ¿qué necesita un robot para completar una tarea correctamente?", a:"Instrucciones claras y en el orden correcto", d:["Solo velocidad","Solo un color bonito","Solo baterías nuevas"], e:"Instrucciones claras y bien ordenadas son la base de la programación."}
-];
-
-function b1_g1(li){
-    const name = ROBOTS[li%10], a=ACTIONS[li%10], b=ACTIONS[(li+3)%10], c=ACTIONS[(li+6)%10], wrong=ACTIONS[(li+1)%10];
-    return mkQ(`El robot ${name} debe hacer esto en orden:\n1) ${a}\n2) ${b}\n3) ${c}\n¿Qué instrucción ejecuta primero?`, a, [b,c,wrong], li, `Las instrucciones se ejecutan en orden, así que primero hace: "${a}".`);
-}
-
-function b1_g3(li){
-    const name = ROBOTS[(li+2)%10]; const steps = 2 + (li%4);
-    return mkQ(`${name} recibe la instrucción "avanzar" ${steps} veces seguidas. ¿Cuántos pasos habrá avanzado en total?`, `${steps} pasos`, [`${steps+1} pasos`, `${steps-1<1?1:steps-1} pasos`, `${steps*2} pasos`], li, `Cada "avanzar" mueve un paso, así que ${steps} instrucciones son ${steps} pasos.`);
-}
-
-function b1_g5(li){
-    const obj = OBJECTS[li%10]; const n = 3 + (li%3);
-    return mkQ(`Un programa dice: "recoger ${obj}" repetido ${n} veces, una instrucción por línea. ¿Cuántas líneas de instrucción tiene el programa?`, `${n} líneas`, [`${n+2} líneas`, `1 línea`, `${n-1} líneas`], li, `Si la instrucción está escrita ${n} veces, el programa tiene exactamente ${n} líneas.`);
-}
-
-const ROBOT_PARTS = [
-    { id:'p-torso', name:'Torso de Robot', icon:'🎽', pts: 20 },
-    { id:'p-head', name:'Cabeza de Robot', icon:'🤖', pts: 40 },
-    { id:'p-legs', name:'Piernas', icon:'🦵', pts: 60 },
-    { id:'p-feet', name:'Pies', icon:'👟', pts: 80 },
-    { id:'p-arm-l', name:'Brazo Izquierdo', icon:'🦾', pts: 100 },
-    { id:'p-arm-r', name:'Brazo Derecho', icon:'🦾', pts: 120 },
-    { id:'p-visor', name:'Visor Lúminico', icon:'🥽', pts: 140 },
-    { id:'p-antenna', name:'Antena de Señal', icon:'📡', pts: 160 },
-    { id:'p-light', name:'Luz de Pecho', icon:'🚨', pts: 180 },
-    { id:'p-jetpack', name:'Propulsor Izquierdo', icon:'🚀', pts: 200 },
-    { id:'p-jetpack2', name:'Propulsor Derecho', icon:'🚀', pts: 220 }
-];
-
-let rkState = {
-    pts: 0,
-    currentLevel: 1,
-    maxLevelUnlocked: 1,
-    currentQIndex: 0,
-    answersCorrectInLevel: 0
-};
-
-function rkInit() {
-    const saved = localStorage.getItem('robotkits_state');
-    if (saved) {
-        try { rkState = Object.assign(rkState, JSON.parse(saved)); } catch(e){}
-    }
-    rkUpdatePtsUI();
-    rkShowHome();
-}
-
-function rkSave() {
-    localStorage.setItem('robotkits_state', JSON.stringify(rkState));
-    rkUpdatePtsUI();
-}
-
-function rkUpdatePtsUI() {
-    const el = document.getElementById('rk-pts');
-    if(el) el.innerText = rkState.pts;
-}
-
-function rkShowHome() {
-    const c = document.getElementById('rk-screen-container');
-    if(!c) return;
-    c.innerHTML = `
-        <div class="hero-rk">
-            <h1>Aprende a programar con <span>RobotKits</span></h1>
-            <p>Resuelve retos de secuencias, lógica y algoritmos para ganar puntos y armar tu propio Robot en el Taller.</p>
-            <button class="cta-btn" onclick="rkShowMap()">🎮 ¡Ver Mapa de Niveles!</button>
-            <div class="stats-row">
-                <div class="stat-card"><div class="num">${rkState.pts}</div><div class="lbl">Puntos ⭐</div></div>
-                <div class="stat-card"><div class="num">${rkState.maxLevelUnlocked}/10</div><div class="lbl">Niveles 🔓</div></div>
-            </div>
-        </div>
-    `;
-}
-
-function rkShowMap() {
-    const c = document.getElementById('rk-screen-container');
-    if(!c) return;
-
-    let nodesHTML = '';
-    for(let i=1; i<=10; i++) {
-        const isDone = i < rkState.maxLevelUnlocked;
-        const isCurrent = i === rkState.maxLevelUnlocked;
-        const isUnlocked = i <= rkState.maxLevelUnlocked;
-
-        let cls = 'node ';
-        if(!isUnlocked) cls += 'locked';
-        else if(isDone) cls += 'done';
-        else cls += 'unlocked ' + (isCurrent ? 'current' : '');
-
-        let content = isUnlocked ? (isDone ? '✓' : i) : '🔒';
-        let action = isUnlocked ? `onclick="rkStartLevel(${i})"` : '';
-
-        nodesHTML += `<div class="${cls}" ${action}>${content}</div>`;
-    }
-
-    c.innerHTML = `
-        <div class="map-header">
-            <h2>🗺️ Bloque 1: Secuencias</h2>
-            <p>Aprende cómo los robots ejecutan instrucciones paso a paso.</p>
-        </div>
-        <div class="block-section">
-            <div class="block-title">
-                <div class="block-dot" style="background:var(--teal)"></div>
-                <h3>Misiones de Secuencia</h3>
-                <span>(10 Niveles)</span>
-            </div>
-            <div class="node-row">${nodesHTML}</div>
-        </div>
-        <button class="secondary-btn" onclick="rkShowHome()">⬅️ Volver</button>
-    `;
-}
-
-function rkGetQuestionsForLevel(level) {
-    const li = level - 1;
-    const q1 = { q: "Lección del Nivel " + level, text: B1_LESSONS[li], isLesson: true };
-    
-    let q2Item = B1_Q2[li];
-    const q2 = mkQ(q2Item.q, q2Item.a, q2Item.d, li, q2Item.e);
-    
-    let q3 = b1_g1(li);
-    if(level % 3 === 0) q3 = b1_g3(li);
-    else if(level % 5 === 0) q3 = b1_g5(li);
-
-    let q4Item = B1_Q4[li];
-    const q4 = mkQ(q4Item.q, q4Item.a, q4Item.d, li, q4Item.e);
-
-    return [q1, q2, q3, q4];
-}
-
-function rkStartLevel(lvl) {
-    rkState.currentLevel = lvl;
-    rkState.currentQIndex = 0;
-    rkState.answersCorrectInLevel = 0;
-    rkRenderQuestion();
-}
-
-function rkRenderQuestion() {
-    const c = document.getElementById('rk-screen-container');
-    if(!c) return;
-
-    const questions = rkGetQuestionsForLevel(rkState.currentLevel);
-    const q = questions[rkState.currentQIndex];
-
-    let dots = '';
-    for(let i=0; i<4; i++) {
-        let dCls = 'dot';
-        if(i < rkState.currentQIndex) dCls += ' filled';
-        if(i === rkState.currentQIndex) dCls += ' active';
-        dots += `<div class="${dCls}"></div>`;
-    }
-
-    if(q.isLesson) {
-        c.innerHTML = `
-            <div class="level-wrap">
-                <span class="back-link" onclick="rkShowMap()">⬅️ Volver al mapa</span>
-                <div class="card">
-                    <span class="level-tag">NIVEL ${rkState.currentLevel} - LECCIÓN</span>
-                    <div class="lesson-emoji">💡</div>
-                    <h2 class="level-title">${q.q}</h2>
-                    <p class="lesson-text">${q.text}</p>
-                    <button class="primary-btn" onclick="rkNextQuestion()">¡Entendido! Comenzar Retos 🚀</button>
+    catalogoTiendaData.forEach(p => {
+        const itemDiv = document.createElement('div');
+        itemDiv.className = 'item-tienda';
+        itemDiv.innerHTML = `
+            <div class="item-info">
+                <span class="item-icon">${p.icono}</span>
+                <div>
+                    <div class="item-nombre">${p.nombre}</div>
+                    <div class="item-precio">🪙 ${p.costo} pts</div>
                 </div>
             </div>
+            <button class="btn-comprar" onclick="comprarParte('${p.tipo}', '${p.icono}', ${p.costo})">Equipar</button>
         `;
-        return;
-    }
-
-    let optsHTML = '';
-    const letters = ['A','B','C','D'];
-    q.options.forEach((opt, idx) => {
-        optsHTML += `
-            <button class="option" id="rk-opt-${idx}" onclick="rkCheckAnswer(${idx}, ${q.correct}, '${q.explain.replace(/'/g, "\\'")}')">
-                <span class="option-letter">${letters[idx]}</span>
-                <span>${opt}</span>
-            </button>
-        `;
+        catalogo.appendChild(itemDiv);
     });
+}
 
-    c.innerHTML = `
-        <div class="level-wrap">
-            <span class="back-link" onclick="rkShowMap()">⬅️ Volver al mapa</span>
-            <div class="progress-dots">${dots}</div>
-            <div class="card">
-                <span class="level-tag">PREGUNTA ${rkState.currentQIndex} DE 3</span>
-                <div class="q-text">${q.text}</div>
-                <div class="options">${optsHTML}</div>
-                <div id="rk-feedback" class="feedback"></div>
-                <button id="rk-next-btn" class="primary-btn next-q-btn" onclick="rkNextQuestion()">Siguiente Pregunta ➡️</button>
-            </div>
-        </div>
+function comprarParte(tipo, icono, costo) {
+    if (estadoApp.puntos >= costo) {
+        estadoApp.puntos -= costo;
+        estadoApp.partesRobot[tipo] = icono;
+        actualizarPuntosUI();
+        renderizarTaller();
+        guardarEstado();
+        alert('¡Pieza equipada con éxito! 🛠️');
+    } else {
+        alert('¡Necesitas más RoboPuntos! Sigue resolviendo niveles. 🚀');
+    }
+}
+
+function renderizarLogros() {
+    const cont = document.getElementById('contenedor-logros');
+    if(!cont) return;
+    cont.innerHTML = `
+        <div class="card-logro">🥇 <b>Iniciado:</b> ${estadoApp.puntos >= 100 ? 'Desbloqueado' : 'Bloqueado'}</div>
+        <div class="card-logro">🏆 <b>Experto:</b> ${estadoApp.puntos >= 500 ? 'Desbloqueado' : 'Bloqueado'}</div>
+        <div class="card-logro">👑 <b>Maestro Robótico:</b> ${estadoApp.puntos >= 1000 ? 'Desbloqueado' : 'Bloqueado'}</div>
     `;
 }
 
-function rkCheckAnswer(selected, correct, explain) {
-    const fb = document.getElementById('rk-feedback');
-    const nextBtn = document.getElementById('rk-next-btn');
-
-    for(let i=0; i<4; i++) {
-        const btn = document.getElementById(`rk-opt-${i}`);
-        if(btn) {
-            btn.classList.add('dim');
-            if(i === correct) btn.classList.add('correct');
-            if(i === selected && selected !== correct) btn.classList.add('wrong');
-        }
-    }
-
-    if(selected === correct) {
-        rkState.answersCorrectInLevel++;
-        fb.className = 'feedback show ok';
-        fb.innerHTML = `<b>¡Correcto! 🎉</b><br>${explain}`;
-    } else {
-        fb.className = 'feedback show bad';
-        fb.innerHTML = `<b>¡Incorrecto! ❌</b><br>${explain}`;
-    }
-
-    if(nextBtn) nextBtn.classList.add('show');
+// --- MODAL DE CONTACTO Y ASISTENTE ---
+function abrirContacto() {
+    document.getElementById('modal-contacto').classList.add('active');
 }
 
-function rkNextQuestion() {
-    rkState.currentQIndex++;
-    if(rkState.currentQIndex < 4) {
-        rkRenderQuestion();
-    } else {
-        rkFinishLevel();
+function cerrarContacto() {
+    document.getElementById('modal-contacto').classList.remove('active');
+}
+
+function enviarMensajeContacto(e) {
+    e.preventDefault();
+    alert('¡Mensaje enviado con éxito! Nos pondremos en contacto pronto. 🚀');
+    cerrarContacto();
+}
+
+function alternarBocadillo() {
+    const b = document.getElementById('bocadillo-asistente');
+    if(b) b.style.display = (b.style.display === 'none' || b.style.display === '') ? 'block' : 'none';
+}
+
+function cerrarBocadillo() {
+    const b = document.getElementById('bocadillo-asistente');
+    if(b) b.style.display = 'none';
+}
+
+// --- PERSISTENCIA LOCAL ---
+function guardarEstado() {
+    localStorage.setItem('robokids_state', JSON.stringify(estadoApp));
+}
+
+function cargarEstado() {
+    const guardado = localStorage.getItem('robokids_state');
+    if (guardado) {
+        estadoApp = { ...estadoApp, ...JSON.parse(guardado) };
     }
-}
-
-function rkFinishLevel() {
-    const c = document.getElementById('rk-screen-container');
-    if(!c) return;
-
-    const earned = rkState.answersCorrectInLevel * 10;
-    rkState.pts += earned;
-
-    if(rkState.currentLevel === rkState.maxLevelUnlocked && rkState.maxLevelUnlocked < 10) {
-        rkState.maxLevelUnlocked++;
-    }
-
-    rkSave();
-
-    c.innerHTML = `
-        <div class="complete-wrap">
-            <div class="complete-emoji">🏆</div>
-            <h2>¡Nivel ${rkState.currentLevel} Completado!</h2>
-            <p>Has respondido correctamente ${rkState.answersCorrectInLevel} de 3 preguntas.</p>
-            <div class="points-earned">+${earned} Puntos ⭐</div>
-            <div class="unlock-banner">
-                🛠️ Visita el <b>Taller Robot</b> para usar tus puntos y desbloquear partes de tu robot.
-            </div>
-            <div class="btn-row">
-                <button class="secondary-btn" onclick="rkShowMap()">🗺️ Ver Mapa</button>
-                <button class="primary-btn" style="width:auto;" onclick="rkOpenWorkshop()">🛠️ Ir al Taller</button>
-            </div>
-        </div>
-    `;
-}
-
-function rkOpenWorkshop() {
-    const m = document.getElementById('rk-workshop-modal');
-    if(!m) return;
-
-    let partsHTML = '';
-    let unlockedCount = 0;
-
-    ROBOT_PARTS.forEach(p => {
-        const isUnlocked = rkState.pts >= p.pts;
-        if(isUnlocked) unlockedCount++;
-
-        const pEl = document.getElementById(`rk-${p.id}`);
-        if(pEl) {
-            if(isUnlocked) pEl.classList.add('unlocked');
-            else pEl.classList.remove('unlocked');
-        }
-
-        partsHTML += `
-            <div class="p-row ${isUnlocked ? '' : 'locked-row'}">
-                <span class="p-ic">${p.icon}</span>
-                <span style="flex:1;"><b>${p.name}</b></span>
-                <span>${isUnlocked ? '✅ Desbloqueado' : `🔒 ${p.pts} pts`}</span>
-            </div>
-        `;
-    });
-
-    const listEl = document.getElementById('rk-parts-list');
-    if(listEl) listEl.innerHTML = partsHTML;
-
-    const pct = Math.min(100, Math.round((unlockedCount / ROBOT_PARTS.length) * 100));
-    const barEl = document.getElementById('rk-workshop-bar');
-    if(barEl) barEl.style.width = pct + '%';
-
-    m.style.display = 'flex';
-}
-
-function rkCloseWorkshop() {
-    const m = document.getElementById('rk-workshop-modal');
-    if(m) m.style.display = 'none';
 }
