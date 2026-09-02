@@ -13,11 +13,17 @@ let estadoApp = {
         grado5: Array(20).fill('pendiente')
     },
     partesRobot: {
-        cabeza: '🤖',
-        cuerpo: '📦',
-        brazos: '💪',
-        piernas: '🛞',
-        accesorio: '✨'
+        cabeza: 'cabeza_mech',
+        cuerpo: 'cuerpo_base',
+        brazos: 'brazos_metal',
+        piernas: 'piernas_ruedas',
+        accesorio: 'accesorio_luz'
+    },
+    robotMundo: {
+        x: 50,
+        y: 8,
+        direccion: 1,
+        objetosRecolectados: []
     }
 };
 
@@ -454,7 +460,13 @@ const preguntasBD = {
 const catalogoTiendaData = [
     { id: 'cabeza_mech', tipo: 'cabeza', nombre: 'Cabeza Mech', icono: '🤖', costo: 50 },
     { id: 'cabeza_alien', tipo: 'cabeza', nombre: 'Cabeza Alien', icono: '👽', costo: 100 },
+    { id: 'cuerpo_base', tipo: 'cuerpo', nombre: 'Cuerpo Base', icono: '📦', costo: 50 },
+    { id: 'cuerpo_nucleo', tipo: 'cuerpo', nombre: 'Cuerpo Núcleo', icono: '🔋', costo: 125 },
     { id: 'brazos_metal', tipo: 'brazos', nombre: 'Brazos Metal', icono: '🦾', costo: 75 },
+    { id: 'brazos_garra', tipo: 'brazos', nombre: 'Brazos Garra', icono: '🦀', costo: 140 },
+    { id: 'piernas_ruedas', tipo: 'piernas', nombre: 'Ruedas Turbo', icono: '🛞', costo: 80 },
+    { id: 'piernas_oruga', tipo: 'piernas', nombre: 'Pies Oruga', icono: '⛓️', costo: 120 },
+    { id: 'accesorio_luz', tipo: 'accesorio', nombre: 'Luz de Energía', icono: '✨', costo: 60 },
     { id: 'accesorio_rayo', tipo: 'accesorio', nombre: 'Accesorio Rayo', icono: '⚡', costo: 150 }
 ];
 
@@ -466,6 +478,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function renderizarTodo() {
     actualizarPuntosUI();
+    actualizarSeleccionGradoUI();
     renderizarMapaNiveles();
     renderizarTaller();
     renderizarLogros();
@@ -476,18 +489,30 @@ function actualizarPuntosUI() {
     document.getElementById('puntos-taller-display').innerText = estadoApp.puntos;
 }
 
-function seleccionarGrado(gradoKey) {
-    estadoApp.gradoActual = gradoKey;
-    
+function actualizarSeleccionGradoUI() {
     document.querySelectorAll('.card-level').forEach(card => card.classList.remove('active-grado'));
-    const cardActiva = document.getElementById(`card-${gradoKey}`);
-    if(cardActiva) cardActiva.classList.add('active-grado');
+    const cardActiva = document.getElementById(`card-${estadoApp.gradoActual}`);
+    if (cardActiva) cardActiva.classList.add('active-grado');
 
     const nombres = { grado3: '3.°', grado4: '4.°', grado5: '5.°' };
-    document.getElementById('titulo-grado-actual').innerText = `🎮 NIVELES: GRADO ${nombres[gradoKey]}`;
+    const titulo = document.getElementById('titulo-grado-actual');
+    if (titulo && nombres[estadoApp.gradoActual]) {
+        titulo.innerText = `🎮 NIVELES: GRADO ${nombres[estadoApp.gradoActual]}`;
+    }
+}
+
+function seleccionarGrado(gradoKey) {
+    if (!preguntasBD[gradoKey]) return;
+    estadoApp.gradoActual = gradoKey;
+    actualizarSeleccionGradoUI();
 
     renderizarMapaNiveles();
     guardarEstado();
+
+    const mapa = document.getElementById('mapa-programacion');
+    if (mapa) {
+        mapa.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
 }
 
 // --- RENDERIZAR MAPA DE NIVELES ---
@@ -507,13 +532,25 @@ function renderizarMapaNiveles() {
         if(est === 'incorrecto') icono = '❌';
 
         btn.innerHTML = `<span>${icono}</span>`;
-        btn.onclick = () => abrirNivel(idx);
+        btn.disabled = est !== 'pendiente';
+        btn.setAttribute('aria-label', est === 'pendiente'
+            ? `Abrir nivel ${idx + 1}`
+            : `Nivel ${idx + 1} completado`);
+        if (est === 'pendiente') {
+            btn.onclick = () => abrirNivel(idx);
+        }
 
         contenedor.appendChild(btn);
     });
 }
 
 function abrirNivel(index) {
+    const estadoNivel = estadoApp.progreso[estadoApp.gradoActual]?.[index];
+    if (estadoNivel !== 'pendiente') {
+        mostrarEstadoRobot('Este nivel ya fue completado. ¡Avanza al siguiente! 🤖');
+        return;
+    }
+
     estadoApp.nivelSeleccionado = index;
     const datosNivel = preguntasBD[estadoApp.gradoActual][index];
 
@@ -539,6 +576,16 @@ function abrirNivel(index) {
 }
 
 function verificarRespuesta(seleccionada, correcta) {
+    const grado = estadoApp.gradoActual;
+    const nivel = estadoApp.nivelSeleccionado;
+    if (nivel === null || estadoApp.progreso[grado]?.[nivel] !== 'pendiente') {
+        return;
+    }
+
+    document.querySelectorAll('#opciones-respuesta .btn-opcion-respuesta').forEach(btn => {
+        btn.disabled = true;
+    });
+
     const feedback = document.getElementById('mensaje-feedback');
     feedback.style.display = 'block';
 
@@ -556,6 +603,8 @@ function verificarRespuesta(seleccionada, correcta) {
 
     actualizarPuntosUI();
     renderizarMapaNiveles();
+    renderizarTaller();
+    renderizarLogros();
     guardarEstado();
 
     setTimeout(() => {
@@ -577,19 +626,37 @@ function reiniciarProgresoGradoActual() {
 
 // --- RENDERIZAR TALLER Y TIENDA ---
 function renderizarTaller() {
-    document.getElementById('part-cabeza').innerText = estadoApp.partesRobot.cabeza;
-    document.getElementById('part-cuerpo').innerText = estadoApp.partesRobot.cuerpo;
-    document.getElementById('part-brazos').innerText = estadoApp.partesRobot.brazos;
-    document.getElementById('part-piernas').innerText = estadoApp.partesRobot.piernas;
-    document.getElementById('part-accesorio').innerText = estadoApp.partesRobot.accesorio;
+    inicializarMundoRobot();
+    const piezas = estadoApp.partesRobot;
+    const piezasVisuales = {
+        cabeza: document.getElementById('part-cabeza'),
+        cuerpo: document.getElementById('part-cuerpo'),
+        brazos: document.getElementById('part-brazos'),
+        piernas: document.getElementById('part-piernas'),
+        accesorio: document.getElementById('part-accesorio')
+    };
+
+    Object.entries(piezasVisuales).forEach(([tipo, elemento]) => {
+        if (elemento) {
+            elemento.dataset.variant = piezas[tipo];
+        }
+    });
+
+    const robot = document.getElementById('robot-2d');
+    if (robot) {
+        robot.classList.remove('robot-avanzando', 'robot-girando', 'robot-saludando', 'robot-bailando');
+        posicionarRobot();
+    }
 
     const catalogo = document.getElementById('catalogo-piezas');
-    if(!catalogo) return;
+    if (!catalogo) return;
     catalogo.innerHTML = '';
 
     catalogoTiendaData.forEach(p => {
+        const equipado = piezas[p.tipo] === p.id;
+        const puedeComprar = estadoApp.puntos >= p.costo || equipado;
         const itemDiv = document.createElement('div');
-        itemDiv.className = 'item-tienda';
+        itemDiv.className = `item-tienda${equipado ? ' item-equipado' : ''}`;
         itemDiv.innerHTML = `
             <div class="item-info">
                 <span class="item-icon">${p.icono}</span>
@@ -598,23 +665,151 @@ function renderizarTaller() {
                     <div class="item-precio">🪙 ${p.costo} pts</div>
                 </div>
             </div>
-            <button class="btn-comprar" onclick="comprarParte('${p.tipo}', '${p.icono}', ${p.costo})">Equipar</button>
+            <button class="btn-comprar" type="button" ${puedeComprar ? '' : 'disabled'} onclick="comprarParte('${p.tipo}', '${p.id}', ${p.costo})">
+                ${equipado ? 'Equipado' : 'Equipar'}
+            </button>
         `;
         catalogo.appendChild(itemDiv);
     });
 }
 
-function comprarParte(tipo, icono, costo) {
+function comprarParte(tipo, idPieza, costo) {
+    const yaEquipado = estadoApp.partesRobot[tipo] === idPieza;
+    if (yaEquipado) {
+        mostrarEstadoRobot('¡Esa pieza ya está equipada! 🤖');
+        return;
+    }
+
     if (estadoApp.puntos >= costo) {
         estadoApp.puntos -= costo;
-        estadoApp.partesRobot[tipo] = icono;
+        estadoApp.partesRobot[tipo] = idPieza;
         actualizarPuntosUI();
         renderizarTaller();
+        renderizarLogros();
         guardarEstado();
-        alert('¡Pieza equipada con éxito! 🛠️');
+        mostrarEstadoRobot('¡Pieza equipada con éxito! 🛠️');
     } else {
-        alert('¡Necesitas más RoboPuntos! Sigue resolviendo niveles. 🚀');
+        mostrarEstadoRobot('¡Necesitas más RoboPuntos! Sigue resolviendo niveles. 🚀');
     }
+}
+
+function mostrarEstadoRobot(mensaje) {
+    const estado = document.getElementById('robot-status');
+    if (estado) estado.innerText = mensaje;
+}
+
+function inicializarMundoRobot() {
+    const canvas = document.getElementById('canvas-robot');
+    if (!canvas || canvas.querySelector('.objeto-taller')) return;
+
+    const objetos = [
+        { id: 'bateria', icono: '🔋', x: 35, y: 45 },
+        { id: 'engranaje', icono: '⚙️', x: 60, y: 32 },
+        { id: 'estrella', icono: '⭐', x: 50, y: 47 }
+    ];
+
+    objetos.forEach(objeto => {
+        if (estadoApp.robotMundo.objetosRecolectados.includes(objeto.id)) return;
+        const elemento = document.createElement('button');
+        elemento.type = 'button';
+        elemento.className = 'objeto-taller';
+        elemento.dataset.objetoId = objeto.id;
+        elemento.textContent = objeto.icono;
+        elemento.title = 'Objeto para recolectar';
+        elemento.style.left = `${objeto.x}%`;
+        elemento.style.top = `${objeto.y}%`;
+        elemento.addEventListener('click', () => recolectarObjeto(objeto.id));
+        canvas.appendChild(elemento);
+    });
+}
+
+function posicionarRobot() {
+    const robot = document.getElementById('robot-2d');
+    const canvas = document.getElementById('canvas-robot');
+    if (!robot || !canvas) return;
+
+    const mundo = estadoApp.robotMundo;
+    const anchoCanvas = canvas.clientWidth || 1;
+    const anchoRobot = robot.getBoundingClientRect().width || 170;
+    const mitadRobot = (anchoRobot / anchoCanvas) * 50;
+    const limiteMinimo = Math.max(18, mitadRobot + 2);
+    const limiteMaximo = Math.min(82, 100 - mitadRobot - 2);
+
+    mundo.x = Math.max(limiteMinimo, Math.min(limiteMaximo, Number(mundo.x) || 50));
+    mundo.y = Math.max(0, Math.min(18, Number(mundo.y) || 8));
+    robot.style.left = `${mundo.x}%`;
+    robot.style.top = `${mundo.y}%`;
+    robot.style.setProperty('--robot-direction', mundo.direccion < 0 ? '-1' : '1');
+}
+
+function recolectarObjeto(idObjeto) {
+    if (estadoApp.robotMundo.objetosRecolectados.includes(idObjeto)) return;
+    estadoApp.robotMundo.objetosRecolectados.push(idObjeto);
+    const objeto = document.querySelector(`.objeto-taller[data-objeto-id="${idObjeto}"]`);
+    if (objeto) objeto.remove();
+    mostrarEstadoRobot('¡Objeto recolectado! Sigue explorando. 🛠️');
+    guardarEstado();
+}
+
+function comprobarRecoleccion() {
+    const canvas = document.getElementById('canvas-robot');
+    const robot = document.getElementById('robot-2d');
+    if (!canvas || !robot) return;
+
+    const objetos = canvas.querySelectorAll('.objeto-taller');
+    const canvasRect = canvas.getBoundingClientRect();
+    const robotRect = robot.getBoundingClientRect();
+    const robotX = ((robotRect.left + robotRect.width / 2 - canvasRect.left) / canvasRect.width) * 100;
+    const robotY = ((robotRect.top + robotRect.height / 2 - canvasRect.top) / canvasRect.height) * 100;
+
+    objetos.forEach(objeto => {
+        const rect = objeto.getBoundingClientRect();
+        const objetoX = ((rect.left + rect.width / 2 - canvasRect.left) / canvasRect.width) * 100;
+        const objetoY = ((rect.top + rect.height / 2 - canvasRect.top) / canvasRect.height) * 100;
+        if (Math.abs(robotX - objetoX) < 13 && Math.abs(robotY - objetoY) < 18) {
+            recolectarObjeto(objeto.dataset.objetoId);
+        }
+    });
+}
+
+function controlarRobot(accion) {
+    const robot = document.getElementById('robot-2d');
+    if (!robot) return;
+
+    const acciones = {
+        avanzar: { clase: 'robot-avanzando', texto: '¡Avanzando! Bip bip... ⬆️' },
+        girar: { clase: 'robot-girando', texto: '¡Girando para explorar! ↪️' },
+        saludar: { clase: 'robot-saludando', texto: '¡Hola, constructor! 👋' },
+        bailar: { clase: 'robot-bailando', texto: '¡Modo baile activado! 🎵' }
+    };
+        const seleccion = acciones[accion];
+    if (!seleccion) return;
+
+    if (accion === 'avanzar') {
+        estadoApp.robotMundo.x += 10 * estadoApp.robotMundo.direccion;
+        if (estadoApp.robotMundo.x >= 70 || estadoApp.robotMundo.x <= 30) {
+            estadoApp.robotMundo.x = Math.max(30, Math.min(70, estadoApp.robotMundo.x));
+            estadoApp.robotMundo.direccion *= -1;
+        }
+        posicionarRobot();
+        comprobarRecoleccion();
+        guardarEstado();
+    } else if (accion === 'girar') {
+        estadoApp.robotMundo.direccion *= -1;
+        posicionarRobot();
+        guardarEstado();
+    }
+
+    robot.classList.remove('robot-avanzando', 'robot-girando', 'robot-saludando', 'robot-bailando');
+    void robot.offsetWidth;
+    robot.classList.add(seleccion.clase);
+    mostrarEstadoRobot(seleccion.texto);
+
+    window.clearTimeout(window.robotAnimacionTimer);
+    window.robotAnimacionTimer = window.setTimeout(() => {
+        robot.classList.remove(seleccion.clase);
+        mostrarEstadoRobot('¡Robot listo! Elige una acción.');
+    }, 1200);
 }
 
 function renderizarLogros() {
@@ -659,7 +854,52 @@ function guardarEstado() {
 
 function cargarEstado() {
     const guardado = localStorage.getItem('robokids_state');
-    if (guardado) {
-        estadoApp = { ...estadoApp, ...JSON.parse(guardado) };
+    if (!guardado) return;
+
+    try {
+        const datosGuardados = JSON.parse(guardado);
+        estadoApp = {
+            ...estadoApp,
+            ...datosGuardados,
+            progreso: {
+                ...estadoApp.progreso,
+                ...(datosGuardados.progreso || {})
+            },
+            partesRobot: {
+                ...estadoApp.partesRobot,
+                ...(datosGuardados.partesRobot || {})
+            },
+            robotMundo: {
+                ...estadoApp.robotMundo,
+                ...(datosGuardados.robotMundo || {})
+            }
+        };
+
+        const equivalenciasAntiguas = {
+            '🤖': 'cabeza_mech',
+            '👽': 'cabeza_alien',
+            '📦': 'cuerpo_base',
+            '🔋': 'cuerpo_nucleo',
+            '💪': 'brazos_metal',
+            '🦾': 'brazos_metal',
+            '🦀': 'brazos_garra',
+            '🛞': 'piernas_ruedas',
+            '⛓️': 'piernas_oruga',
+            '✨': 'accesorio_luz',
+            '⚡': 'accesorio_rayo'
+        };
+
+        if (!Array.isArray(estadoApp.robotMundo.objetosRecolectados)) {
+            estadoApp.robotMundo.objetosRecolectados = [];
+        }
+
+        Object.keys(estadoApp.partesRobot).forEach(tipo => {
+            const valor = estadoApp.partesRobot[tipo];
+            if (equivalenciasAntiguas[valor]) {
+                estadoApp.partesRobot[tipo] = equivalenciasAntiguas[valor];
+            }
+        });
+    } catch (error) {
+        console.warn('No se pudo cargar el progreso guardado. Se iniciará un progreso nuevo.', error);
     }
 }

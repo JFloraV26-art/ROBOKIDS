@@ -241,12 +241,41 @@
                 <div class="taller-layout">
                     <div class="taller-preview">
                         <h3 style="font-family: 'Fredoka', cursive; color: #2d3436; margin-bottom: 10px;">🤖 Tu Creación</h3>
-                        <div class="canvas-robot">
-                            <div id="part-cabeza">🤖</div>
-                            <div id="part-cuerpo">📦</div>
-                            <div id="part-brazos">💪</div>
-                            <div id="part-piernas">🛞</div>
-                            <div id="part-accesorio">✨</div>
+                        <div class="canvas-robot" id="canvas-robot" aria-live="polite">
+                            <div class="robot-2d" id="robot-2d" role="img" aria-label="Robot construido en el taller">
+                                <div class="robot-2d-antenna" id="part-antena" aria-hidden="true">
+                                    <span class="robot-2d-antenna-ball"></span>
+                                </div>
+                                <div class="robot-2d-head" id="part-cabeza" data-variant="cabeza_mech">
+                                    <span class="robot-2d-eye left-eye"></span>
+                                    <span class="robot-2d-eye right-eye"></span>
+                                    <span class="robot-2d-mouth"></span>
+                                </div>
+                                <div class="robot-2d-arms" id="part-brazos" data-variant="brazos_metal" aria-hidden="true">
+                                    <span class="robot-2d-arm left-arm"></span>
+                                    <span class="robot-2d-arm right-arm"></span>
+                                </div>
+                                <div class="robot-2d-body" id="part-cuerpo" data-variant="cuerpo_base">
+                                    <span class="robot-2d-panel"></span>
+                                    <span class="robot-2d-light light-one"></span>
+                                    <span class="robot-2d-light light-two"></span>
+                                    <span class="robot-2d-light light-three"></span>
+                                </div>
+                                <div class="robot-2d-legs" id="part-piernas" data-variant="piernas_ruedas" aria-hidden="true">
+                                    <span class="robot-2d-leg left-leg"></span>
+                                    <span class="robot-2d-leg right-leg"></span>
+                                </div>
+                                <div class="robot-2d-accessory" id="part-accesorio" data-variant="accesorio_luz" aria-hidden="true"></div>
+                            </div>
+                        </div>
+                        <div class="robot-controls" aria-label="Controles del robot">
+                            <p id="robot-status" class="robot-status" role="status">¡Robot listo! Elige una acción.</p>
+                            <div class="robot-control-buttons">
+                                <button type="button" class="btn-robot-control" onclick="controlarRobot('avanzar')">⬆️ Avanzar</button>
+                                <button type="button" class="btn-robot-control" onclick="controlarRobot('girar')">↪️ Girar</button>
+                                <button type="button" class="btn-robot-control" onclick="controlarRobot('saludar')">👋 Saludar</button>
+                                <button type="button" class="btn-robot-control" onclick="controlarRobot('bailar')">🎵 Bailar</button>
+                            </div>
                         </div>
                     </div>
 
