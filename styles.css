@@ -1310,3 +1310,97 @@ a {
         transform-origin: 50% 90%;
     }
 }
+
+
+/* --- CELEBRACIÓN AL COMPLETAR UN NIVEL --- */
+.celebracion-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 3000;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.confeti {
+    position: absolute;
+    top: -24px;
+    width: 10px;
+    height: 18px;
+    border-radius: 3px;
+    background: var(--color-confeti);
+    opacity: 0;
+    animation: caerConfeti var(--duracion-confeti) ease-in var(--retraso-confeti) forwards;
+}
+
+.confeti:nth-child(3n) {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+}
+
+.confeti:nth-child(3n + 1) {
+    transform: rotate(35deg);
+}
+
+.fuego-artificial {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    transform: translate(-50%, -50%);
+    animation: destelloFuego 0.75s ease-out var(--retraso-fuego) both;
+}
+
+.particula-fuego {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 7px;
+    height: 22px;
+    border-radius: 999px;
+    background: var(--color-fuego);
+    box-shadow: 0 0 10px var(--color-fuego);
+    transform-origin: 50% 0;
+    transform: translate(-50%, 0) rotate(var(--angulo-fuego)) scaleY(0);
+    animation: expandirFuego 0.75s ease-out var(--retraso-fuego) both;
+}
+
+@keyframes caerConfeti {
+    0% {
+        opacity: 1;
+        transform: translate3d(0, -5vh, 0) rotate(0deg);
+    }
+    100% {
+        opacity: 0.95;
+        transform: translate3d(var(--deriva-confeti), 110vh, 0) rotate(var(--giro-confeti));
+    }
+}
+
+@keyframes expandirFuego {
+    0% {
+        opacity: 1;
+        transform: translate(-50%, 0) rotate(var(--angulo-fuego)) scaleY(0.15);
+    }
+    65% {
+        opacity: 1;
+        transform: translate(-50%, 0) rotate(var(--angulo-fuego)) scaleY(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(-50%, 0) rotate(var(--angulo-fuego)) scaleY(0.55);
+    }
+}
+
+@keyframes destelloFuego {
+    0% { opacity: 0; transform: translate(-50%, -50%) scale(0.2); }
+    25% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
+    100% { opacity: 0; transform: translate(-50%, -50%) scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .confeti,
+    .fuego-artificial,
+    .particula-fuego {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+    }
+}

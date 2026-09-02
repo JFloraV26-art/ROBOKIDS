@@ -575,6 +575,53 @@ function abrirNivel(index) {
     document.getElementById('modal-pantalla-nivel').classList.add('active');
 }
 
+function lanzarCelebracion() {
+    const celebracionAnterior = document.querySelector('.celebracion-overlay');
+    if (celebracionAnterior) celebracionAnterior.remove();
+
+    const overlay = document.createElement('div');
+    overlay.className = 'celebracion-overlay';
+    overlay.setAttribute('aria-hidden', 'true');
+
+    const colores = ['#6c5ce7', '#00b894', '#fdcb6e', '#ff7675', '#55efc4', '#a29bfe'];
+    for (let i = 0; i < 70; i += 1) {
+        const pieza = document.createElement('span');
+        pieza.className = 'confeti';
+        pieza.style.left = `${Math.random() * 100}%`;
+        pieza.style.setProperty('--color-confeti', colores[i % colores.length]);
+        pieza.style.setProperty('--deriva-confeti', `${Math.round(Math.random() * 180 - 90)}px`);
+        pieza.style.setProperty('--duracion-confeti', `${2.2 + Math.random() * 1.1}s`);
+        pieza.style.setProperty('--retraso-confeti', `${Math.random() * 0.35}s`);
+        pieza.style.setProperty('--giro-confeti', `${Math.round(Math.random() * 720 - 360)}deg`);
+        overlay.appendChild(pieza);
+    }
+
+    const posiciones = [
+        { x: 20, y: 27 },
+        { x: 50, y: 19 },
+        { x: 80, y: 30 }
+    ];
+    posiciones.forEach((posicion, indice) => {
+        const fuego = document.createElement('div');
+        fuego.className = 'fuego-artificial';
+        fuego.style.left = `${posicion.x}%`;
+        fuego.style.top = `${posicion.y}%`;
+        fuego.style.setProperty('--retraso-fuego', `${indice * 0.22}s`);
+
+        for (let angulo = 0; angulo < 360; angulo += 45) {
+            const particula = document.createElement('span');
+            particula.className = 'particula-fuego';
+            particula.style.setProperty('--angulo-fuego', `${angulo}deg`);
+            particula.style.setProperty('--color-fuego', colores[(indice + angulo / 45) % colores.length]);
+            fuego.appendChild(particula);
+        }
+        overlay.appendChild(fuego);
+    });
+
+    document.body.appendChild(overlay);
+    window.setTimeout(() => overlay.remove(), 3600);
+}
+
 function verificarRespuesta(seleccionada, correcta) {
     const grado = estadoApp.gradoActual;
     const nivel = estadoApp.nivelSeleccionado;
@@ -594,6 +641,7 @@ function verificarRespuesta(seleccionada, correcta) {
         estadoApp.progreso[estadoApp.gradoActual][estadoApp.nivelSeleccionado] = 'correcto';
         feedback.className = 'feedback-box fb-exito';
         feedback.innerText = '¡Correcto! 🎉 Ganaste +100 RoboPuntos.';
+        lanzarCelebracion();
     } else {
         estadoApp.puntos = Math.max(0, estadoApp.puntos - 25);
         estadoApp.progreso[estadoApp.gradoActual][estadoApp.nivelSeleccionado] = 'incorrecto';
