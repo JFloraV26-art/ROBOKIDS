@@ -1,182 +1,414 @@
-<!-- Extensión funcional: Esta extensión muestra los tipos de decoración que tiene la pagina de GASTROMIND. -->
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Mesa Raíz: comida artesanal, ingredientes de temporada y pedidos preparados con cariño.">
-  <title>GastroMind</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RoboKids - ¡Aprende Robótica Jugando!</title>
+    <meta name="theme-color" content="#6c5ce7">
+    <script>
+        /* Activa las animaciones de scroll. Si por alguna razón no arrancan, se desactivan para no dejar contenido oculto. */
+        document.documentElement.classList.add('js');
+        setTimeout(function () {
+            if (!window.__rvListo) document.documentElement.classList.remove('js');
+        }, 3500);
+    </script>
+    <!-- Fuentes Infantiles -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div class="announcement-bar">
-    <p><span class="announcement-dot"></span> Pedidos del día abiertos · Envío gratis desde $75.000</p>
-    <a href="#como-funciona">Así funciona <span aria-hidden="true">↗</span></a>
-  </div>
 
-  <header class="site-header" id="inicio">
-    <div class="nav-shell">
-      <a class="brand" href="#inicio" aria-label="Mesa Raíz, volver al inicio">
-        <span class="brand-mark" aria-hidden="true">
-          <svg viewBox="0 0 32 32" role="img"><path d="M16 27.2c-5.9-5.1-9.1-9.3-9.1-13.2C6.9 9.8 10.4 7 14 7c1.2 0 2.1.4 3 1.2C17.9 7.4 18.9 7 20 7c3.6 0 7.1 2.8 7.1 7 0 3.9-3.2 8.1-9.1 13.2L16 28l-1-.8Z"/><path d="M4 14.5c3.1-1.2 5.1-3.4 5.9-6.2M28 14.5c-3.1-1.2-5.1-3.4-5.9-6.2"/></svg>
-        </span>
-        <span class="brand-copy"><strong>GASTRO</strong><em>MIND</em></span>
-      </a>
+    <!-- BARRA DE PROGRESO DE SCROLL -->
+    <div class="scroll-progress" aria-hidden="true"></div>
 
-      <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Abrir menú" aria-expanded="false">
-        <span></span><span></span><span></span>
-      </button>
+    <!-- BARRA DE NAVEGACIÓN -->
+    <header class="navbar">
+        <div class="logo">
+            <span>🤖</span>
+            ROBO<span class="highlight">KIDS</span> ✨
+            <picture class="logo-colegio">
+                <source srcset="Logo-colegio-iesma.avif" type="image/avif">
+                <img src="Logo-colegio-iesma.png" alt="Escudo de la Institución Educativa San Mateo" title="Institución Educativa San Mateo" width="46" height="50">
+            </picture>
+        </div>
+        <nav class="nav-links">
+            <a href="#introduccion">💡 ¿Qué es?</a>
+            <a href="#codigos">🧩 Tipos de Código</a>
+            <a href="#inicio" class="active">🚀 Inicio</a>
+            <a href="#niveles">⭐ Elegir Grado</a>
+            <a href="#mapa-programacion">🎮 Niveles</a>
+            <a href="#taller-robot">🛠️ Taller Robot</a>
+        </nav>
+        
+        <div class="puntos-badge">
+            🪙 <span id="puntos-navbar">0</span> <span class="puntos-texto">Puntos</span>
+        </div>
 
-      <nav class="main-nav" id="main-nav" aria-label="Navegación principal">
-        <a class="nav-link active" href="#inicio">Inicio</a>
-        <a class="nav-link" href="#menu">Menú</a>
-        <a class="nav-link" href="#como-funciona">Cómo funciona</a>
-        <a class="nav-link" href="#nuestra-historia">Nuestra historia</a>
-      </nav>
+        <button class="btn-contacto" onclick="abrirContacto( )">✉️ <span class="btn-texto">¡Escríbenos!</span></button>
+        <button class="btn-contacto" id="btn-sesion" type="button" onclick="abrirLogin()" title="Iniciar sesión" aria-label="Iniciar sesión" style="padding: 12px 14px; margin-left: 10px; flex-shrink: 0;">🔑</button>
+    </header>
 
-      <div class="nav-actions">
-        <button class="icon-btn theme-toggle" id="theme-toggle" type="button" aria-label="Cambiar apariencia" title="Cambiar apariencia">
-          <svg class="icon icon-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42"></path></svg>
-          <svg class="icon icon-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 15.1A8.5 8.5 0 0 1 8.9 3.5 8.5 8.5 0 1 0 20.5 15.1Z"></path></svg>
-        </button>
-        <button class="account-btn" id="open-auth" type="button">Iniciar sesión</button>
-        <button class="icon-btn notification-btn" id="open-inbox" type="button" aria-label="Abrir pedidos y notificaciones" title="Mis pedidos y notificaciones"><span aria-hidden="true">♧</span><span class="notification-count" id="notification-count" hidden>0</span></button>
-        <button class="sell-btn" id="open-publish" type="button">Vender un plato <span aria-hidden="true">＋</span></button>
-        <button class="cart-btn" id="open-cart" type="button" aria-label="Abrir carrito">
-          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2l2.1 10.1a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 1.9-1.4L20 8H6"></path><circle cx="9" cy="19" r="1.3"></circle><circle cx="17" cy="19" r="1.3"></circle></svg>
-          <span>Carrito</span>
-          <span class="cart-count" id="cart-count">0</span>
-        </button>
-      </div>
+    <!-- INTRODUCCIÓN -->
+    <section id="introduccion" class="hero-section" style="padding-bottom: 0;">
+        <div class="poster-card rv" data-rv="card">
+            <div class="inner-card hero-content-wrapper" style="background: linear-gradient(135deg, #4834d4 0%, #6c5ce7 100%);">
+                <div class="hero-text" style="width: 100%;">
+                    <span class="badge-fun">💡 ¿SABÍAS QUÉ? 💡</span>
+                    <h2 class="sub-title">DESCUBRE EL MUNDO DE LA</h2>
+                    <h1 class="main-title" style="font-size: 3rem;">TECNOLOGÍA</h1>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-top: 20px;">
+                        <div style="background: rgba(255, 255, 255, 0.15); padding: 18px; border-radius: 16px; border: 2px dashed #ffeaa7;">
+                            <h3 style="font-family: 'Fredoka', cursive; font-size: 1.4rem; color: #ffeaa7; margin-bottom: 8px;">🤖 ¿Qué es la Robótica?</h3>
+                            <p style="font-size: 0.95rem; font-weight: 700; line-height: 1.4; color: #ffffff;">¡Es construir amigos de metal! 🛠️ Crear y armar máquinas geniales con ruedas, motores y luces para que nos ayuden en tareas divertidas.</p>
+                        </div>
+                        <div style="background: rgba(255, 255, 255, 0.15); padding: 18px; border-radius: 16px; border: 2px dashed #00b894;">
+                            <h3 style="font-family: 'Fredoka', cursive; font-size: 1.4rem; color: #55efc4; margin-bottom: 8px;">💻 ¿Qué es la Programación?</h3>
+                            <p style="font-size: 0.95rem; font-weight: 700; line-height: 1.4; color: #ffffff;">¡Es dar súper órdenes! 📜 Darle una receta de cocina paso a paso a la computadora para que sepa exactamente qué hacer sin equivocarse.</p>
+                        </div>
+                        <div style="background: rgba(255, 255, 255, 0.15); padding: 18px; border-radius: 16px; border: 2px dashed #fd79a8;">
+                            <h3 style="font-family: 'Fredoka', cursive; font-size: 1.4rem; color: #ff7675; margin-bottom: 8px;">⚡ ¿Cómo se Relacionan?</h3>
+                            <p style="font-size: 0.95rem; font-weight: 700; line-height: 1.4; color: #ffffff;">¡Forman un gran equipo! 🧠🤖 El robot es el <strong>cuerpo</strong> (hardware) y la programación es su <strong>cerebro</strong> (software). ¡Sin cerebro no puede moverse!</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="robot-hero-avatar">
+                    <div class="robot-head robot-curious">
+                        <div class="robot-antenna">
+                            <div class="antenna-ball"></div>
+                        </div>
+                        <div class="robot-ears left-ear"></div>
+                        <div class="robot-ears right-ear"></div>
+                        <div class="robot-screen">
+                            <div class="robot-eye left-eye"></div>
+                            <div class="robot-eye right-eye"></div>
+                            <div class="robot-mouth mouth-o"></div>
+                        </div>
+                        <div class="robot-cheeks left-cheek"></div>
+                        <div class="robot-cheeks right-cheek"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TIPOS DE CÓDIGO -->
+    <section id="codigos" class="hero-section" style="padding-top: 25px; padding-bottom: 0;">
+        <div class="poster-card rv" data-rv="card">
+            <div class="inner-card hero-content-wrapper" style="background: linear-gradient(135deg, #2c2c54 0%, #474787 100%);">
+                <div class="hero-text" style="width: 100%;">
+                    <span class="badge-fun" style="background-color: #00b894; color: #ffffff;">🧩 LENGUAJES Y HERRAMIENTAS 🧩</span>
+                    <h2 class="sub-title" style="color: #55efc4;">TIPOS DE CÓDIGO</h2>
+                    <h1 class="main-title" style="font-size: 2.8rem;">¿CÓMO LE HABLAMOS AL ROBOT?</h1>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-top: 20px;">
+                        <div style="background: rgba(255, 255, 255, 0.12); padding: 18px; border-radius: 16px; border: 2px dashed #fdcb6e;">
+                            <h3 style="font-family: 'Fredoka', cursive; font-size: 1.3rem; color: #ffeaa7; margin-bottom: 8px;">🧩 Por Bloques</h3>
+                            <p style="font-size: 0.9rem; font-weight: 700; color: #ffffff;">¡Como jugar con LEGOs! 🧱 Juntas fichas de colores como "Avanzar" o "Girar" para programar de forma fácil y divertida.</p>
+                        </div>
+                        <div style="background: rgba(255, 255, 255, 0.12); padding: 18px; border-radius: 16px; border: 2px dashed #ff7675;">
+                            <h3 style="font-family: 'Fredoka', cursive; font-size: 1.3rem; color: #ff7675; margin-bottom: 8px;">💻 Texto (Arduino / C++)</h3>
+                            <p style="font-size: 0.9rem; font-weight: 700; color: #ffffff;">¡Cartas con código secreto! ✉️ Escribes palabras exactas y símbolos en la pantalla para darle reglas precisas al robot.</p>
+                        </div>
+                        <div style="background: rgba(255, 255, 255, 0.12); padding: 18px; border-radius: 16px; border: 2px dashed #a29bfe;">
+                            <h3 style="font-family: 'Fredoka', cursive; font-size: 1.3rem; color: #a29bfe; margin-bottom: 8px;">🐍 Python e IA</h3>
+                            <p style="font-size: 0.9rem; font-weight: 700; color: #ffffff;">¡Superpoderes para pensar! 🧠✨ Le enseñamos al robot a ver con cámaras, escuchar tu voz y tomar decisiones solo.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="robot-hero-avatar">
+                    <div class="robot-head robot-coder">
+                        <div class="robot-antenna">
+                            <div class="antenna-ball"></div>
+                        </div>
+                        <div class="robot-ears left-ear"></div>
+                        <div class="robot-ears right-ear"></div>
+                        <div class="robot-screen">
+                            <div class="robot-eye left-eye code-eye">&lt;/&gt;</div>
+                            <div class="robot-eye right-eye code-eye">&lt;/&gt;</div>
+                            <div class="robot-mouth mouth-code"></div>
+                        </div>
+                        <div class="robot-cheeks left-cheek"></div>
+                        <div class="robot-cheeks right-cheek"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- BANNER PRINCIPAL CON ROBOT ANIMADO -->
+    <section id="inicio" class="hero-section">
+        <div class="poster-card rv" data-rv="card">
+            <div class="inner-card hero-content-wrapper">
+                
+                <div class="hero-text">
+                    <span class="badge-fun">⚡ ¡Aprende Jugando! ⚡</span>
+                    <h2 class="sub-title">CLASES DE</h2>
+                    <h1 class="main-title">ROBÓTICA</h1>
+                    <p class="description">Gana +100 RoboPuntos por acierto. Si fallas pierdes 25 RoboPuntos y avanza la casilla en rojo. 🚀</p>
+                    
+                    <div class="quick-buttons">
+                        <button onclick="seleccionarGrado('grado3')" class="btn-level-fun">
+                            <span>🔍 Grado 3.°: Exploración</span>
+                        </button>
+                        <button onclick="seleccionarGrado('grado4')" class="btn-level-fun">
+                            <span>⚡ Grado 4.°: Circuitos</span>
+                        </button>
+                        <button onclick="seleccionarGrado('grado5')" class="btn-level-fun">
+                            <span>🚀 Grado 5.°: Algoritmos</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="robot-hero-avatar">
+                    <div class="robot-head">
+                        <div class="robot-antenna">
+                            <div class="antenna-ball"></div>
+                        </div>
+                        <div class="robot-ears left-ear"></div>
+                        <div class="robot-ears right-ear"></div>
+                        <div class="robot-screen">
+                            <div class="robot-eye left-eye"></div>
+                            <div class="robot-eye right-eye"></div>
+                            <div class="robot-mouth"></div>
+                        </div>
+                        <div class="robot-cheeks left-cheek"></div>
+                        <div class="robot-cheeks right-cheek"></div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- SELECCIÓN DE GRADOS -->
+    <section id="niveles" class="section-container">
+        <h2 class="section-title rv">🌟 ¡ELIGE TU GRADO DE AVENTURA! 🌟</h2>
+        <p class="section-subtitle rv">20 niveles por cada grado. ¡Demuestra tu conocimiento!</p>
+
+        <div class="grid-levels rv-group">
+            <article id="card-grado3" class="card-level active-grado rv" data-rv="left">
+                <div class="level-badge bg-yellow">⭐ 20 NIVELES</div>
+                <div class="card-icon">🔍</div>
+                <h3>Grado 3.°</h3>
+                <h4>Exploración y Componentes</h4>
+                <p>¡Aprende sobre sensores, motores y componentes de un robot!</p>
+                <button onclick="seleccionarGrado('grado3')" class="btn-action bg-yellow-btn">¡Jugar Grado 3.°! 🚀</button>
+            </article>
+
+            <article id="card-grado4" class="card-level rv" data-rv="up">
+                <div class="level-badge bg-mint">⭐⭐ 20 NIVELES</div>
+                <div class="card-icon">💡</div>
+                <h3>Grado 4.°</h3>
+                <h4>Circuitos y Sensores</h4>
+                <p>¡Leds, servomotores, cables y lógica de programación!</p>
+                <button onclick="seleccionarGrado('grado4')" class="btn-action bg-mint-btn">¡Jugar Grado 4.°! 🚀</button>
+            </article>
+
+            <article id="card-grado5" class="card-level rv" data-rv="right">
+                <div class="level-badge bg-pink">⭐⭐⭐ 20 NIVELES</div>
+                <div class="card-icon">🧠</div>
+                <h3>Grado 5.°</h3>
+                <h4>Algoritmos y Mecatrónica</h4>
+                <p>¡Condicionales, bucles, microcontroladores y retos avanzados!</p>
+                <button onclick="seleccionarGrado('grado5')" class="btn-action bg-pink-btn">¡Jugar Grado 5.°! 🚀</button>
+            </article>
+        </div>
+    </section>
+
+    <!-- MAPA DE 20 NIVELES -->
+    <section id="mapa-programacion" class="section-container bg-interactive-section">
+        <div class="mapa-header rv">
+            <h2 id="titulo-grado-actual" class="section-title">🎮 NIVELES: GRADO 3.°</h2>
+            <p class="section-subtitle">Acierta (✅) para sumar 100 pts. Si te equivocas (❌) pierdes 25 pts pero avanzas.</p>
+            <button class="btn-reset" onclick="reiniciarProgresoGradoActual()">🔄 Reiniciar Progreso de este Grado</button>
+        </div>
+
+        <div id="grid-niveles-juego" class="grid-niveles-container" data-stagger></div>
+    </section>
+
+    <!-- TALLER ROBOT -->
+    <section id="taller-robot" class="section-container">
+        <div class="poster-card rv" data-rv="card">
+            <div class="inner-card hero-content-wrapper" style="background: linear-gradient(135deg, #1e272e 0%, #00b894 100%); flex-direction: column; align-items: center; text-align: center;">
+                <span class="badge-fun" style="background-color: #fbc531; color: #2d3436;">🛠️ GARAJE MECATRÓNICO 🛠️</span>
+                <h2 style="font-family: 'Fredoka', cursive; font-size: 2rem; color: #ffffff;">¡CONSTRUYE TU PROPIO ROBOT!</h2>
+
+                <div class="robot-hero-avatar" style="margin-top: 10px;">
+                    <div class="robot-head robot-builder">
+                        <div class="robot-antenna">
+                            <div class="antenna-ball"></div>
+                        </div>
+                        <div class="robot-ears left-ear"></div>
+                        <div class="robot-ears right-ear"></div>
+                        <div class="robot-screen">
+                            <div class="robot-eye left-eye"></div>
+                            <div class="robot-eye right-eye"></div>
+                            <div class="robot-mouth"></div>
+                        </div>
+                        <div class="robot-cheeks left-cheek"></div>
+                        <div class="robot-cheeks right-cheek"></div>
+                    </div>
+                </div>
+
+                <div class="taller-layout">
+                    <div class="taller-preview rv" data-rv="left">
+                        <h3 style="font-family: 'Fredoka', cursive; color: #2d3436; margin-bottom: 10px;">🤖 Tu Creación</h3>
+                        <div class="canvas-robot" id="canvas-robot" aria-live="polite">
+                            <div class="robot-2d" id="robot-2d" role="img" aria-label="Robot construido en el taller">
+                                <div class="robot-2d-antenna" id="part-antena" aria-hidden="true">
+                                    <span class="robot-2d-antenna-ball"></span>
+                                </div>
+                                <div class="robot-2d-head" id="part-cabeza" data-variant="cabeza_mech">
+                                    <span class="robot-2d-eye left-eye"></span>
+                                    <span class="robot-2d-eye right-eye"></span>
+                                    <span class="robot-2d-mouth"></span>
+                                </div>
+                                <div class="robot-2d-arms" id="part-brazos" data-variant="brazos_metal" aria-hidden="true">
+                                    <span class="robot-2d-arm left-arm"></span>
+                                    <span class="robot-2d-arm right-arm"></span>
+                                </div>
+                                <div class="robot-2d-body" id="part-cuerpo" data-variant="cuerpo_base">
+                                    <span class="robot-2d-panel"></span>
+                                    <span class="robot-2d-light light-one"></span>
+                                    <span class="robot-2d-light light-two"></span>
+                                    <span class="robot-2d-light light-three"></span>
+                                </div>
+                                <div class="robot-2d-legs" id="part-piernas" data-variant="piernas_ruedas" aria-hidden="true">
+                                    <span class="robot-2d-leg left-leg"></span>
+                                    <span class="robot-2d-leg right-leg"></span>
+                                </div>
+                                <div class="robot-2d-accessory" id="part-accesorio" data-variant="accesorio_luz" aria-hidden="true"></div>
+                            </div>
+                        </div>
+                        <div class="robot-controls" aria-label="Controles del robot">
+                            <p id="robot-status" class="robot-status" role="status">¡Robot listo! Elige una acción.</p>
+                            <div class="robot-control-buttons">
+                                <button type="button" class="btn-robot-control" onclick="controlarRobot('avanzar')">⬆️ Avanzar</button>
+                                <button type="button" class="btn-robot-control" onclick="controlarRobot('girar')">↪️ Girar</button>
+                                <button type="button" class="btn-robot-control" onclick="controlarRobot('saludar')">👋 Saludar</button>
+                                <button type="button" class="btn-robot-control" onclick="controlarRobot('bailar')">🎵 Bailar</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="taller-tienda rv" data-rv="right">
+                        <div class="balance-caja">
+                            <span>🪙 RoboPuntos Disponibles:</span>
+                            <strong id="puntos-taller-display">0</strong>
+                        </div>
+                        <div class="catalogo-piezas" id="catalogo-piezas" data-stagger></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- INSIGNIAS Y LOGROS -->
+    <section id="logros-estudiante" class="section-container">
+        <div class="poster-card rv" data-rv="card">
+            <div class="inner-card" style="background: linear-gradient(135deg, #2d3436 0%, #636e72 100%);">
+                <div style="width: 100%;">
+                    <span class="badge-fun" style="background-color: #fd79a8; color: #ffffff;">🏆 INSIGNIAS Y LOGROS 🏆</span>
+                    <h3 style="font-family: 'Fredoka', cursive; font-size: 1.8rem; color: #ffeaa7;">TU COLECCIÓN DE MEDALLAS</h3>
+                    <div id="contenedor-logros" data-stagger style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px;"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- MODAL DE PREGUNTA / NIVEL -->
+    <div id="modal-pantalla-nivel" class="modal-overlay">
+        <div class="modal-content">
+            <button class="btn-cerrar-modal" onclick="cerrarNivel()">✖</button>
+            <h2 id="nivel-titulo-modal" style="font-family: 'Fredoka', cursive; color: #6c5ce7;">Nivel 1</h2>
+            
+            <div class="area-mision">
+                <p><b>🎯 Misión:</b> <span id="nivel-objetivo-text">...</span></p>
+                <p style="margin-top: 10px;"><b>❓ Pregunta:</b></p>
+                <p id="nivel-pregunta-text" class="pregunta-destacada">...</p>
+            </div>
+
+            <div id="mensaje-feedback" class="feedback-box" style="display: none;"></div>
+            <div id="opciones-respuesta" class="grid-opciones"></div>
+        </div>
     </div>
-  </header>
 
-  <main>
-    <section class="hero-section">
-      <div class="hero-content">
-        <div class="eyebrow"><span class="eyebrow-line"></span> Comida hecha con inspiración</div>
-        <h1>Sabores que inspiran<br><em>tu mente.</em></h1>
-        <p class="hero-copy">Platos llenos de inspiracion, mentes creadoras y sueños en grande.
-          <p>Redes Sociales: Instagram: gastro_mind.five</p>
-        </p>
-        <div class="hero-actions">
-          <a class="btn btn-primary" href="#menu">Explorar el menú <span aria-hidden="true">→</span></a>
-          <a class="text-link" href="#nuestra-historia">Conoce nuestra historia de como empezo este proyecto <span aria-hidden="true">↗</span></a>
+    <!-- MODAL CONTACTO -->
+    <div id="modal-contacto" class="modal-overlay">
+        <div class="modal-content">
+            <button class="btn-cerrar-modal" onclick="cerrarContacto()">✖</button>
+            <h2 style="font-family: 'Fredoka', cursive; color: #6c5ce7;">✉️ ¡Escríbenos a RoboKids!</h2>
+            <form onsubmit="enviarMensajeContacto(event)" style="display: flex; flex-direction: column; gap: 10px; margin-top: 15px;">
+                <input type="text" placeholder="Tu Nombre o Apodo" required style="padding: 10px; border-radius: 10px; border: 2px solid #a29bfe;">
+                <input type="email" placeholder="Correo electrónico del tutor" required style="padding: 10px; border-radius: 10px; border: 2px solid #a29bfe;">
+                <textarea placeholder="¿Qué nos quieres contar?" rows="3" required style="padding: 10px; border-radius: 10px; border: 2px solid #a29bfe;"></textarea>
+                <button type="submit" class="btn-action bg-yellow-btn">🚀 ¡Enviar Mensaje!</button>
+            </form>
         </div>
-      </div>
-      <div class="hero-visual">
-        <div class="hero-photo" role="img" aria-label="Mesa servida con comida artesanal"></div>
-        <div class="hero-note note-top"><span class="note-icon">✦</span><span><strong>100% artesanal</strong><small>Cocinado cuando tu lo pidas</small></span></div>
-        <div class="hero-note note-bottom"><span class="note-icon note-leaf">⌁</span><span><strong>Ingredientes locales</strong><small></small></span></div>
-        <div class="hero-stamp"><span>Desde</span><strong>2026</strong><span>con cariño e inspiración</span></div>
-      </div>
-    </section>
+    </div>
 
-    <section class="trust-strip" aria-label="Beneficios de Mesa Raíz">
-      <div class="trust-item"><span class="trust-icon">◌</span><div><strong>Hecho en el día</strong><span>Sin conservantes</span></div></div>
-      <div class="trust-item"><span class="trust-icon">⌁</span><div><strong>Ingredientes de aquí</strong><span>Apoyamos lo local</span></div></div>
-      <div class="trust-item"><span class="trust-icon">♡</span><div><strong>Empaque consciente</strong><span>Menos plástico, más futuro</span></div></div>
-      <div class="trust-item"><span class="trust-icon">↗</span><div><strong>Entrega con cuidado</strong><span>Llega calientito a tu puerta</span></div></div>
-    </section>
+    <!-- MODAL INICIO DE SESIÓN -->
+    <div id="modal-login" class="modal-overlay">
+        <div class="modal-content">
+            <button class="btn-cerrar-modal" type="button" onclick="cerrarLogin()">✖</button>
 
-    <section class="section-shell menu-section" id="menu">
-      <div class="section-heading menu-heading">
-        <div>
-          <div class="eyebrow"><span class="eyebrow-line"></span> Recién salido de cocina</div>
-          <h2>Elige tu momento<br><em>favorito.</em></h2>
+            <!-- Vista: formulario de acceso / registro -->
+            <div id="vista-auth">
+                <h2 id="auth-titulo" style="font-family: 'Fredoka', cursive; color: #6c5ce7;">🔑 ¡Entra a RoboKids!</h2>
+                <form id="form-auth" onsubmit="enviarAuth(event)" autocomplete="on" style="display: flex; flex-direction: column; gap: 10px; margin-top: 15px;">
+                    <input type="text" id="auth-usuario" placeholder="Tu nombre de usuario" autocomplete="username" minlength="3" maxlength="20" required style="padding: 10px; border-radius: 10px; border: 2px solid #a29bfe;">
+                    <input type="password" id="auth-clave" placeholder="Tu contraseña" autocomplete="current-password" minlength="6" required style="padding: 10px; border-radius: 10px; border: 2px solid #a29bfe;">
+                    <input type="password" id="auth-clave2" placeholder="Repite tu contraseña" autocomplete="new-password" style="padding: 10px; border-radius: 10px; border: 2px solid #a29bfe; display: none;">
+                    <div id="auth-mensaje" class="feedback-box" style="display: none;" role="alert"></div>
+                    <button type="submit" id="auth-enviar" class="btn-action bg-yellow-btn">🚀 ¡Entrar!</button>
+                </form>
+                <p style="text-align: center; margin-top: 15px; font-weight: 700; color: #636e72;">
+                    <span id="auth-cambio-texto">¿Aún no tienes cuenta?</span>
+                    <a href="#" id="auth-cambio" onclick="cambiarModoAuth(event)" style="color: #6c5ce7; font-weight: 800;">Crear cuenta</a>
+                </p>
+            </div>
+
+            <!-- Vista: sesión iniciada -->
+            <div id="vista-cuenta" style="display: none; text-align: center;">
+                <h2 style="font-family: 'Fredoka', cursive; color: #6c5ce7;">👤 ¡Hola, <span id="cuenta-nombre"></span>!</h2>
+                <p style="margin: 15px 0; font-weight: 700; color: #636e72;">Tu progreso y tus RoboPuntos se guardan en tu cuenta. 🪙</p>
+                <button type="button" class="btn-action bg-pink-btn" onclick="cerrarSesion()">🚪 Cerrar sesión</button>
+            </div>
         </div>
-        <div class="menu-heading-side"><p>Pequeños lotes, grandes sabores. Mentes inspiradas en Grande.</p><span class="open-status"><i></i> Hoy estamos cocinando</span></div>
-      </div>
+    </div>
 
-      <div class="menu-toolbar">
-        <div class="filter-list" role="group" aria-label="Filtrar menú">
-          <button class="filter-btn active" data-category="todos" type="button">Todo</button>
-          <button class="filter-btn" data-category="favoritos" type="button">Favoritos</button>
-          <button class="filter-btn" data-category="fuertes" type="button">Para compartir</button>
-          <button class="filter-btn" data-category="express" type="button">Express</button>
-          <button class="filter-btn" data-category="dulce" type="button">Algo dulce</button>
+    <!-- FOOTER -->
+    <footer class="main-footer">
+        <div class="footer-content rv">
+            <div>
+                <h3>🤖 ROBOKIDS</h3>
+                <p>Aprendiendo tecnología, programación y robótica mientras nos divertimos.</p>
+            </div>
+            <div>
+                <h4>📞 MÁS INFORMACIÓN:</h4>
+                <p>🌐 robotkids22@gmail.com |</p>
+            </div>
         </div>
-        <label class="menu-search"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"></circle><path d="m16 16 5 5"></path></svg><input type="search" id="search-input" placeholder="Buscar en el menú" aria-label="Buscar en el menú"></label>
-      </div>
-
-      <div class="product-grid" id="product-grid" aria-live="polite"></div>
-      <div class="empty-state" id="no-results" hidden><span class="empty-icon">⌂</span><h3>No encontramos ese antojo</h3><p>Prueba con otro nombre o revisa todas las opciones del menú.</p><button class="btn btn-secondary" id="clear-search" type="button">Ver todo el menú</button></div>
-    </section>
-
-    <section class="category-section section-shell" aria-labelledby="category-title">
-      <div class="section-heading compact-heading"><div><div class="eyebrow"><span class="eyebrow-line"></span> Para cada antojo</div><h2 id="category-title">Un menú con<br><em>raíces.</em></h2></div><a class="text-link" href="#menu">Ver todo el menú <span aria-hidden="true">→</span></a></div>
-      <div class="category-grid">
-        <button class="category-tile category-tile-main" data-category-link="fuertes" type="button"><span class="tile-overlay"></span><span class="tile-content"><small>01 · Para compartir</small><strong>Platos con<br>historia</strong><span class="tile-arrow">↗</span></span></button>
-        <button class="category-tile category-tile-express" data-category-link="express" type="button"><span class="tile-overlay"></span><span class="tile-content"><small>02 · Para el día a día</small><strong>Rico y<br>sin espera</strong><span class="tile-arrow">↗</span></span></button>
-        <button class="category-tile category-tile-dulce" data-category-link="dulce" type="button"><span class="tile-overlay"></span><span class="tile-content"><small>03 · Para cerrar bonito</small><strong>Un final<br>dulce</strong><span class="tile-arrow">↗</span></span></button>
-      </div>
-    </section>
-
-    <section class="story-section section-shell" id="nuestra-historia">
-      <div class="story-visual"><div class="story-photo story-photo-one"></div><div class="story-photo story-photo-two"></div><span class="story-label">Cocina<br>con raíces</span></div>
-      <div class="story-content"><div class="eyebrow"><span class="eyebrow-line"></span> Nuestra forma de hacerlo</div><h2>La comida sabe<br>mejor cuando <em>importa.</em></h2><p>En GastroMind te ofrecemos platos brillantes de mentes inspiradoras y con el tiempo para hacerlo bien y la ilusión de sentarnos a compartir.</p><p>Trabajamos con jovenes promesas que quieren demostrar que un sueño es posible si tu te lo propones. Buscan demostrar que ellos tambien pueden cumplir sus sueños de ser emprendedores con sus creaciones y sus capacidades.</p> 
-      <p>Los pequeños creadores eh inventores de la pagina fueron: Julian Vega (programador)- Andrea Gonzalez (Redes Sociales)- Dilan Muñoz- Nicol Uribe - Felipe Linares.</p><a class="btn btn-secondary" href="#como-funciona">Conoce nuestro proceso <span aria-hidden="true">→</span></a></div>
-    </section></p>
-    <section class="how-section" id="como-funciona">
-      <div class="section-shell"><div class="section-heading centered-heading"><div class="eyebrow"><span class="eyebrow-line"></span> Tan fácil como antojarse</div><h2>Del fogón a<br><em>tu mesa.</em></h2></div><div class="steps-grid"><div class="how-step"><span class="step-number">01</span><span class="step-icon">⌕</span><h3>Elige tu favorito</h3><p>Explora nuestro menú de temporada y arma tu pedido a tu gusto.</p></div><div class="how-step"><span class="step-number">02</span><span class="step-icon">✦</span><h3>Lo cocinamos para ti</h3><p>Preparamos cada plato al momento, en pequeños lotes y con cariño.</p></div><div class="how-step"><span class="step-number">03</span><span class="step-icon">⌁</span><h3>Lo recibes en casa</h3><p>Coordinamos tu entrega o recogida para que llegue en su punto.</p></div></div></div>
-    </section>
-
-   <section class="reviews-section section-shell" id="comentarios" aria-labelledby="reviews-title">
-      <div class="section-heading compact-heading">
-        <div>
-          <div class="eyebrow"><span class="eyebrow-line"></span> Déjanos tu opinión</div>
-          <h2 id="reviews-title">Comentarios de la<br><em>comunidad.</em></h2>
+        <div class="footer-bottom">
+            <p>© 2026 RoboKids - Proyecto Educativo de Robótica</p>
         </div>
-      </div>
+    </footer>
 
-      <!-- Formulario para agregar un nuevo comentario -->
-      <form id="comment-form" style="margin-top: 32px; background: #ece8dc; padding: 24px; border-radius: 12px;">
-        <div class="form-grid single-column" style="gap: 14px;">
-          <label>Tu nombre
-            <input type="text" id="comment-author" placeholder="Ej. Ana María" required>
-          </label>
-          <label>Puntuación
-            <select id="comment-rating" required>
-              <option value="5">★★★★★ (5/5)</option>
-              <option value="4">★★★★☆ (4/5)</option>
-              <option value="3">★★★☆☆ (3/5)</option>
-              <option value="2">★★☆☆☆ (2/5)</option>
-              <option value="1">★☆☆☆☆ (1/5)</option>
-            </select>
-          </label>
-          <label>Tu comentario
-            <textarea id="comment-text" rows="3" placeholder="Escribe tu opinión sobre nuestra propuesta o tus platos favoritos..." required minlength="5"></textarea>
-          </label>
-          <button class="btn btn-primary" type="submit" style="align-self: start; margin-top: 6px;">
-            Publicar comentario <span>→</span>
-          </button>
+    <!-- ROBOT CHAT -->
+    <div class="asistente-container">
+        <div id="bocadillo-asistente" class="bocadillo-chat">
+            <p>¡Hola! Soy <strong>RoboBot</strong> 🤖. ¡Responde los 20 niveles y gana RoboPuntos para armar tu propio robot!</p>
+            <button onclick="cerrarBocadillo()" class="btn-cerrar-chat">✕</button>
         </div>
-      </form>
-
-      <!-- Contenedor donde se mostrarán los comentarios dinámicos -->
-      <div class="reviews-grid" id="comments-list" style="margin-top: 35px;"></div>
-    </section>
-  </main>
-
-  <footer class="site-footer"><div class="footer-shell"><div class="footer-brand"><a class="brand" href="#inicio"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M16 27.2c-5.9-5.1-9.1-9.3-9.1-13.2C6.9 9.8 10.4 7 14 7c1.2 0 2.1.4 3 1.2C17.9 7.4 18.9 7 20 7c3.6 0 7.1 2.8 7.1 7 0 3.9-3.2 8.1-9.1 13.2L16 28l-1-.8Z"/><path d="M4 14.5c3.1-1.2 5.1-3.4 5.9-6.2M28 14.5c-3.1-1.2-5.1-3.4-5.9-6.2"/></svg></span><span class="brand-copy"><strong>GASTRO</strong><em>MIND</em></span></a><p>Comida honesta para días que merecen algo especial.</p></div><div class="footer-column"><h4>Explora</h4><a href="#menu">Menú completo</a><a href="#nuestra-historia">Nuestra historia</a><a href="#como-funciona">Cómo funciona</a></div><div class="footer-column"><h4>¿Hablamos?</h4><a href="mailto:hola@mesaraiz.co">GastroMindFive@gmail.com</a><a href="tel:+573001234567">+57 318 607 8042</a><span>Bogotá · Colombia</span></div><div class="footer-column"><h4>Síguenos</h4><div class="social-links"><a href="#" aria-label="Instagram">ig</a><a href="#" aria-label="Facebook">fb</a><a href="#" aria-label="TikTok">tk</a></div><span>Hecho lento, disfrutado rápido.</span></div></div><div class="footer-bottom"><span>© 2026 Gastro Mind. Todos los derechos reservados.</span><span>Privacidad · Términos</span></div></footer>
-
-  <div class="toast" id="toast" role="status" aria-live="polite"><span class="toast-icon">✓</span><span id="toast-message">Añadido al carrito</span></div>
-
-  <aside class="cart-drawer" id="cart-drawer" aria-hidden="true" aria-labelledby="cart-title"><div class="drawer-backdrop" id="drawer-backdrop"></div><div class="drawer-panel"><div class="drawer-header"><div><span class="eyebrow drawer-eyebrow">Tu pedido</span><h2 id="cart-title">Carrito <span id="drawer-count">(0)</span></h2></div><button class="close-btn" id="close-cart" type="button" aria-label="Cerrar carrito">×</button></div><div class="cart-items" id="cart-items"></div><div class="cart-empty" id="cart-empty"><span>⌁</span><h3>Tu carrito está esperando</h3><p>Agrega algo rico y aquí guardaremos tu pedido.</p><button class="btn btn-primary" id="start-shopping" type="button">Ver el menú</button></div><div class="drawer-footer" id="drawer-footer"><div class="delivery-callout"><span class="callout-icon">↗</span><span><strong>Envío gratis</strong><small>En pedidos desde $75.000</small></span></div><div class="summary-row"><span>Subtotal</span><strong id="cart-subtotal">$0</strong></div><div class="summary-row summary-total"><span>Total estimado</span><strong id="cart-total">$0</strong></div><button class="btn btn-primary checkout-btn" id="open-checkout" type="button">Continuar con el pedido <span>→</span></button><small class="secure-note">Pedido seguro · Confirmación por WhatsApp</small></div></div></aside>
-
-  <div class="modal" id="checkout-modal" aria-hidden="true"><div class="modal-backdrop" id="checkout-backdrop"></div><div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="checkout-title"><button class="close-btn modal-close" id="close-checkout" type="button" aria-label="Cerrar formulario">×</button><div class="modal-heading"><span class="eyebrow">Último paso</span><h2 id="checkout-title">Hagamos tu pedido.</h2><p>Déjanos tus datos y te confirmaremos disponibilidad y hora de entrega.</p></div><form id="checkout-form"><div class="form-grid"><label>Nombre completo<input name="name" type="text" placeholder="Tu nombre" required></label><label>Teléfono<input name="phone" type="tel" placeholder="300 000 0000" required></label><label class="full-width">¿Cómo quieres recibirlo?<select name="fulfillment"><option value="Domicilio">Domicilio</option><option value="Recoger en cocina">Recoger en cocina</option></select></label><label class="full-width" id="address-field">Dirección de entrega<input name="address" type="text" placeholder="Calle, número, barrio"></label><label class="full-width">¿Cómo quieres pagar?<select name="paymentMethod"><option value="Efectivo">Efectivo</option><option value="Transferencia">Transferencia</option></select></label><label class="full-width">Nota para cocina <textarea name="notes" rows="3" placeholder="Alergias, horario ideal o algo más que debamos saber"></textarea></label></div><div class="checkout-total"><span>Total estimado</span><strong id="checkout-total">$0</strong></div><button class="btn btn-primary full-submit" type="submit">Enviar solicitud de pedido <span>→</span></button><p class="form-disclaimer">El pedido se asigna a la persona que publicó cada plato. Con transferencia, verás sus datos al confirmar.</p></form><div class="order-success" id="order-success" hidden><span class="success-mark">✓</span><h3>¡Recibimos tu solicitud!</h3><p id="order-success-copy">Las personas creadoras recibirán los detalles de tu pedido.</p><div class="payment-instructions" id="payment-instructions"></div><button class="btn btn-secondary" id="success-close" type="button">Volver al menú</button></div></div></div>
-
-  <div class="modal" id="auth-modal" aria-hidden="true"><div class="modal-backdrop" id="auth-backdrop"></div><div class="modal-panel account-modal-panel" role="dialog" aria-modal="true" aria-labelledby="auth-title"><button class="close-btn modal-close" id="close-auth" type="button" aria-label="Cerrar inicio de sesión">×</button><div class="modal-heading"><span class="eyebrow">Comunidad GastroMind</span><h2 id="auth-title">Inicia sesión.</h2><p id="auth-description">Entra con tu cuenta para publicar tus platos y que las personas conozcan tu propuesta.</p></div><form id="auth-form"><div class="form-grid single-column"><label>Nombre de usuario<input id="auth-username" name="username" type="text" minlength="3" maxlength="24" autocomplete="username" placeholder="Ej. cocina.de.ana" required></label><label>Contraseña<input id="auth-password" name="password" type="password" minlength="4" autocomplete="current-password" placeholder="Tu contraseña" required></label></div><button class="btn btn-primary full-submit" id="auth-submit" type="submit">Iniciar sesión <span>→</span></button><p class="form-disclaimer"><span id="auth-switch-copy">¿Aún no tienes cuenta?</span> <button class="text-button" id="auth-switch" type="button">Regístrate aquí</button></p></form></div></div>
-
-  <div class="modal" id="publish-modal" aria-hidden="true"><div class="modal-backdrop" id="publish-backdrop"></div><div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="publish-title"><button class="close-btn modal-close" id="close-publish" type="button" aria-label="Cerrar publicación de plato">×</button><div class="modal-heading"><span class="eyebrow">Tu espacio de venta</span><h2 id="publish-title">Comparte tu plato.</h2><p>Completa los datos para añadir tu creación al menú. Tu nombre de usuario se mostrará junto al plato.</p></div><form id="publish-form"><div class="form-grid single-column"><label>Foto del plato<input id="dish-image" name="image" type="file" accept="image/png,image/jpeg,image/webp" required><small class="field-help">PNG, JPG o WEBP. Se guardará solo en este navegador.</small></label><label>Nombre del plato<input name="title" type="text" minlength="3" maxlength="60" placeholder="Ej. Sancocho de la casa" required></label><label>Descripción del plato<textarea name="description" rows="3" minlength="12" maxlength="700" placeholder="Cuenta los ingredientes, porción o qué hace especial tu plato" required></textarea></label><label>Precio del plato<input name="price" type="number" min="1" step="1" inputmode="numeric" placeholder="Ej. 25000" required></label><label>Banco, billetera o plataforma<input name="transferProvider" type="text" minlength="2" maxlength="60" placeholder="Ej. Nequi, Daviplata o Bancolombia" required></label><label>Nombre de quien recibe<input name="transferRecipient" type="text" minlength="2" maxlength="100" placeholder="Nombre del titular" required></label><label>Número o dato para transferir<input name="transferDetails" type="text" minlength="3" maxlength="120" placeholder="Ej. 300 000 0000" required></label></div><button class="btn btn-primary full-submit" type="submit">Publicar mi plato <span>→</span></button><p class="form-disclaimer">Al publicar, confirmas que la información y la imagen corresponden a tu plato.</p></form></div></div>
-
-  <div class="modal" id="inbox-modal" aria-hidden="true"><div class="modal-backdrop" id="inbox-backdrop"></div><div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="inbox-title"><button class="close-btn modal-close" id="close-inbox" type="button" aria-label="Cerrar pedidos">×</button><div class="modal-heading"><span class="eyebrow">Tu espacio de venta</span><h2 id="inbox-title">Pedidos y avisos.</h2><p id="inbox-description">Aquí verás las solicitudes que hagan por tus platos.</p></div><div class="seller-inbox" id="seller-inbox"></div></div></div>
-
-  <!-- Librería oficial de Supabase -->
- <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="script.js"></script>
+        <div class="avatar-robot" onclick="alternarBocadillo()" style="font-size: 3rem; cursor: pointer;">🤖</div>
+    </div>
+   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- VINCULACIÓN CORRECTA AL SCRIPT EXTERNO CON LAS PREGUNTAS VARIADAS -->
+    <script src="script.js"></script>
 </body>
 </html>
